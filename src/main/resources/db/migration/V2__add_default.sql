@@ -1,0 +1,10 @@
+
+ALTER TABLE question
+    ADD CONSTRAINT DF_question_sent_at
+    DEFAULT SYSDATETIMEOFFSET() FOR sent_at;
+GO
+
+ALTER TABLE answer
+    ADD CONSTRAINT DF_answer_sent_at
+    DEFAULT SYSDATETIMEOFFSET() FOR sent_at;
+GO
