@@ -66,7 +66,8 @@ CREATE TABLE question
     id       BIGINT PRIMARY KEY IDENTITY (1,1),
     nickname NVARCHAR(20) NOT NULL,
     text     NVARCHAR(1000) NOT NULL,
-    sent_at  DATETIMEOFFSET NOT NULL
+    sent_at  DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+    status   NVARCHAR(10) NOT NULL CHECK (status IN ('pending', 'approved')) default 'pending'
 );
 GO
 
@@ -76,7 +77,7 @@ CREATE TABLE answer
     question_id BIGINT NOT NULL UNIQUE,
     app_user_id BIGINT NOT NULL,
     text        NVARCHAR(MAX) NOT NULL,
-    sent_at     DATETIMEOFFSET NOT NULL,
+    sent_at     DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
 
     CONSTRAINT FK_answer_question FOREIGN KEY (question_id) REFERENCES question (id) ON DELETE CASCADE,
     CONSTRAINT FK_answer_app_user FOREIGN KEY (app_user_id) REFERENCES app_user (id) ON DELETE CASCADE

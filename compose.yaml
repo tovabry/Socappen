@@ -1,7 +1,7 @@
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver
+    container_name: myserver
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "Stroengpesswurd1?"
@@ -14,4 +14,3 @@ services:
 
 volumes:
   sql-data:
-
