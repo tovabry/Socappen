@@ -20,6 +20,9 @@ public class Question {
     @Column(name = "sent_at", nullable = false)
     private OffsetDateTime sentAt;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
     @OneToOne(mappedBy = "question", fetch = FetchType.LAZY)
     private Answer answer;
 
@@ -53,5 +56,21 @@ public class Question {
 
     public void setSentAt(OffsetDateTime sentAt) {
         this.sentAt = sentAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Answer getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(Answer answer) {
+        this.answer = answer;
     }
 }
