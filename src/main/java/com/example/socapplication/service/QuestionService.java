@@ -1,6 +1,7 @@
 package com.example.socapplication.service;
 
 
+import com.example.socapplication.model.dto.QandADto.ResponseQAndA;
 import com.example.socapplication.model.dto.questionDto.ResponseQuestion;
 import com.example.socapplication.model.entity.Question;
 import com.example.socapplication.model.mapper.QuestionMapper;
@@ -59,5 +60,15 @@ public class QuestionService {
                 .map(QuestionMapper::map)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
+
+    public ResponseQAndA findQuestionWithAnswer(Long id) {
+        return questionRepository.findQuestionWithAnswerById(id)
+                .orElseThrow();
+    }
+
+    public List<ResponseQAndA> findAllQuestionsWithAnswers() {
+        return questionRepository.findAllQuestionsWithAnswers();
+    }
+
 }
 

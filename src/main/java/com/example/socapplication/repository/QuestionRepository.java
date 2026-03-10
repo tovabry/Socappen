@@ -8,6 +8,7 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends ListCrudRepository<Question, Long> {
@@ -15,7 +16,19 @@ public interface QuestionRepository extends ListCrudRepository<Question, Long> {
     List<Question> findByStatus(String status);
 
     @Query("""
-        SELECT new com.example.socapplication.model.dto.questionDto.ResponseQuestionWithAnswer(
+SELECT new com.example.socapplication.model.dto.QandADto.ResponseQAndA(
+    q.id,
+    q.nickname,
+    q.text,
+    a.text
+)
+FROM Question q
+LEFT JOIN Answer a ON a.question.id = q.id
+""")
+    List<ResponseQAndA> findAllQuestionsWithAnswers();
+
+    @Query("""
+        SELECT new com.example.socapplication.model.dto.QandADto.ResponseQAndA(
             q.id,
             q.nickname,
             q.text,
@@ -23,7 +36,7 @@ public interface QuestionRepository extends ListCrudRepository<Question, Long> {
         )
         FROM Question q
         LEFT JOIN Answer a ON a.question.id = q.id
+        WHERE q.id = :id
     """)
-    List<ResponseQAndA> findAllQuestionsWithAnswers();
-
+    Optional<ResponseQAndA> findQuestionWithAnswerById(Long id);
 }

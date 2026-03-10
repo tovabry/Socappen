@@ -1,9 +1,12 @@
 package com.example.socapplication.controller;
 
 
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@RequestMapping
 public class ChatController {
 
 
