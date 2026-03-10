@@ -1,10 +1,13 @@
 package com.example.socapplication.model.dto.appUserDto;
 
+import com.example.socapplication.user.AppUserRole;
+import com.example.socapplication.user.AppUserStatus;
+
 public record ResponseAppUser(
-Integer id,
+Long id,
 String email,
-String status,
-String role,
+AppUserStatus status,
+AppUserRole role,
 boolean is_online
 ) {
 }

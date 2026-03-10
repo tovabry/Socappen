@@ -1,5 +1,7 @@
 package com.example.socapplication.controller;
 
+import com.example.socapplication.model.dto.appUserDto.ResponseAppUser;
+import com.example.socapplication.service.AppUserService;
 import com.example.socapplication.service.CurrentUser;
 
 import org.springframework.http.ResponseEntity;
@@ -9,15 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("api/user")
 public class AppUserController {
     private final CurrentUser currentUser;
 
-    public AppUserController(CurrentUser currentUser) {
+    AppUserService appUserService;
+
+    public AppUserController(CurrentUser currentUser, AppUserService appUserService) {
         this.currentUser = currentUser;
+        this.appUserService = appUserService;
 
     }
     @GetMapping("/me")
@@ -26,6 +32,11 @@ public class AppUserController {
         Map<String, String> response = new HashMap<>();
         response.put("email", email != null ? email : "Guest");
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all")
+    public List<ResponseAppUser> getAllUsers() {
+        return appUserService.findAllUsers();
     }
 
 
