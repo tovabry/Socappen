@@ -1,5 +1,6 @@
 package com.example.socapplication.controller;
 
+import com.example.socapplication.model.dto.QandADto.ResponseQAndA;
 import com.example.socapplication.model.dto.questionDto.ResponseQuestion;
 import com.example.socapplication.model.entity.Question;
 import com.example.socapplication.service.QuestionService;
@@ -30,6 +31,16 @@ public class QuestionController {
     @GetMapping("/{id}")
     public ResponseQuestion questionById(@PathVariable Long id) {
         return questionService.findQuestionById(id);
+    }
+
+    @GetMapping("/with-answers")
+    public List<ResponseQAndA> getAllQuestionsWithAnswers() {
+        return questionService.findAllQuestionsWithAnswers();
+    }
+
+    @GetMapping("/{id}/with-answer")
+    public ResponseQAndA getQuestionWithAnswer(@PathVariable Long id) {
+        return questionService.findQuestionWithAnswer(id);
     }
 
 }
