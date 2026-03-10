@@ -4,7 +4,7 @@ public record ResponseQAndA(
         Long QuestionId,
         String nickname,
         String questionText,
-        String answertext
+        String answerText
 ) {
 }
 
