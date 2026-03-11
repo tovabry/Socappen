@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("api/users")
 public class AppUserController {
     private final CurrentUser currentUser;
 
