@@ -32,6 +32,18 @@ public class ConversationParticipant {
         this.id = new ConversationParticipantId(conversation.getId(), appUser.getId());
     }
 
+    public void setId(ConversationParticipantId id) {
+        this.id = id;
+    }
+
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
     public ConversationParticipantId getId() {
         return id;
     }
@@ -51,4 +63,7 @@ public class ConversationParticipant {
     public void setJoinedAt(OffsetDateTime joinedAt) {
         this.joinedAt = joinedAt;
     }
+
+
 }
+
