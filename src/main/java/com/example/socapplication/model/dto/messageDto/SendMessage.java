@@ -1,6 +1,7 @@
 package com.example.socapplication.model.dto.messageDto;
 
 public record SendMessage(
-        String text
+        Long senderId,
+        String content
 ) {
 }
