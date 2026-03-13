@@ -3,12 +3,17 @@ package com.example.socapplication.model.entity;
 import com.example.socapplication.user.AppUserRole;
 import com.example.socapplication.user.AppUserStatus;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "app_user")
-public class AppUser {
+public class AppUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,12 +42,55 @@ public class AppUser {
     @Column(name = "is_online", nullable = false)
     private Boolean isOnline;
 
-    public void setId(Long id) {
-        this.id = id;
+    // -------------------------
+    // UserDetails implementation
+    // -------------------------
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
+
+    @Override
+    public String getPassword() {
+        return passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return status != AppUserStatus.suspended;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return status == AppUserStatus.active;
+    }
+
+    // -------------------------
+    // Getters & Setters
+    // -------------------------
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -51,6 +99,14 @@ public class AppUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public AppUserRole getRole() {
@@ -92,5 +148,4 @@ public class AppUser {
     public void setOnline(Boolean online) {
         isOnline = online;
     }
-
 }

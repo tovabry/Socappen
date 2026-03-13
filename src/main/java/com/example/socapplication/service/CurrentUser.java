@@ -16,34 +16,22 @@ public final class CurrentUser {
     }
 
     public Integer getUserId() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = getEmail();
+        if (email == null) return null;
 
-        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
-            return null; // anonymous user
-        }
-
-        try {
-            return Integer.parseInt(auth.getName());
-        } catch (NumberFormatException e) {
-            return null;
-        }
+        return Math.toIntExact(appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getId());
     }
 
     public String getEmail() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
-            return null; // anonymous user
-        }
-
-        try {
-            Integer id = Integer.parseInt(auth.getName());
-            return appUserRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("User not found"))
-                    .getEmail();
-        } catch (NumberFormatException e) {
             return null;
         }
+
+        return auth.getName(); // already the email from JWT sub
     }
 
     public String getRole() {
