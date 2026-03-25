@@ -3,10 +3,14 @@ package com.example.socapplication.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@Setter
+@Getter
 @Embeddable
 public class ConversationParticipantId implements Serializable {
 
@@ -20,22 +24,6 @@ public class ConversationParticipantId implements Serializable {
 
     public ConversationParticipantId(Long conversationId, Long appUserId){
         this.conversationId = conversationId;
-        this.appUserId = appUserId;
-    }
-
-    public Long getConversationId() {
-        return conversationId;
-    }
-
-    public void setConversationId(Long conversationId) {
-        this.conversationId = conversationId;
-    }
-
-    public Long getAppUserId() {
-        return appUserId;
-    }
-
-    public void setAppUserId(Long appUserId) {
         this.appUserId = appUserId;
     }
 

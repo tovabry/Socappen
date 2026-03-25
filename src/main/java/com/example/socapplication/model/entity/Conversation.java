@@ -1,10 +1,14 @@
 package com.example.socapplication.model.entity;
 
-import com.example.socapplication.user.ConversationStatus;
+import com.example.socapplication.enums.user.ConversationStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "conversation")
 public class Conversation {
@@ -23,35 +27,4 @@ public class Conversation {
     @Column(name = "status", length = 10, nullable = false)
     private ConversationStatus status;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getLastActivityAt() {
-        return lastActivityAt;
-    }
-
-    public void setLastActivityAt(OffsetDateTime lastActivityAt) {
-        this.lastActivityAt = lastActivityAt;
-    }
-
-    public ConversationStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ConversationStatus status) {
-        this.status = status;
-    }
 }

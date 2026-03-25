@@ -1,6 +1,10 @@
 package com.example.socapplication.model.entity;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "frequently_asked_question")
 public class FrequentlyAskedQuestion {
@@ -14,27 +18,4 @@ public class FrequentlyAskedQuestion {
     @Column(name = "answer", nullable = false)
     private String answer;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
 }
