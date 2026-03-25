@@ -2,8 +2,13 @@ package com.example.socapplication.model.entity;
 
 import com.example.socapplication.model.entity.AppUser;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.OffsetDateTime;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "conversation_participant", schema = "dbo")
 public class ConversationParticipant {
@@ -30,38 +35,6 @@ public class ConversationParticipant {
         this.conversation = conversation;
         this.appUser = appUser;
         this.id = new ConversationParticipantId(conversation.getId(), appUser.getId());
-    }
-
-    public void setId(ConversationParticipantId id) {
-        this.id = id;
-    }
-
-    public void setConversation(Conversation conversation) {
-        this.conversation = conversation;
-    }
-
-    public void setAppUser(AppUser appUser) {
-        this.appUser = appUser;
-    }
-
-    public ConversationParticipantId getId() {
-        return id;
-    }
-
-    public Conversation getConversation() {
-        return conversation;
-    }
-
-    public AppUser getAppUser() {
-        return appUser;
-    }
-
-    public OffsetDateTime getJoinedAt() {
-        return joinedAt;
-    }
-
-    public void setJoinedAt(OffsetDateTime joinedAt) {
-        this.joinedAt = joinedAt;
     }
 
 

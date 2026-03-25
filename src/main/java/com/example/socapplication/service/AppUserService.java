@@ -4,8 +4,8 @@ import com.example.socapplication.model.dto.appUserDto.RegisterRequest;
 import com.example.socapplication.model.dto.appUserDto.ResponseAppUser;
 import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.repository.AppUserRepository;
-import com.example.socapplication.user.AppUserRole;
-import com.example.socapplication.user.AppUserStatus;
+import com.example.socapplication.enums.user.AppUserRole;
+import com.example.socapplication.enums.user.AppUserStatus;
 import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,7 +41,7 @@ public class AppUserService implements UserDetailsService {
         user.setStatus(AppUserStatus.active);
         user.setCreatedAt(OffsetDateTime.now());
         user.setLastActivityAt(OffsetDateTime.now());
-        user.setOnline(false);
+        user.setIsOnline(false);
 
         AppUser saved = appUserRepository.save(user);
 
@@ -50,7 +50,7 @@ public class AppUserService implements UserDetailsService {
                 saved.getEmail(),
                 saved.getStatus(),
                 saved.getRole(),
-                saved.getOnline()
+                saved.getIsOnline()
         );
     }
 
@@ -62,7 +62,7 @@ public class AppUserService implements UserDetailsService {
                         appUser.getEmail(),
                         appUser.getStatus(),
                         appUser.getRole(),
-                        appUser.getOnline()
+                        appUser.getIsOnline()
                 ))
                 .toList();
     }

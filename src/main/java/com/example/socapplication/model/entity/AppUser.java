@@ -1,8 +1,11 @@
 package com.example.socapplication.model.entity;
 
-import com.example.socapplication.user.AppUserRole;
-import com.example.socapplication.user.AppUserStatus;
+import com.example.socapplication.enums.user.AppUserRole;
+import com.example.socapplication.enums.user.AppUserStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +14,8 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "app_user")
 public class AppUser implements UserDetails {
@@ -39,6 +44,8 @@ public class AppUser implements UserDetails {
     @Column(name = "last_activity_at", nullable = false)
     private OffsetDateTime lastActivityAt;
 
+    @Getter
+    @Setter
     @Column(name = "is_online", nullable = false)
     private Boolean isOnline;
 
@@ -47,7 +54,7 @@ public class AppUser implements UserDetails {
     // -------------------------
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name().toUpperCase()));
     }
 
@@ -57,7 +64,7 @@ public class AppUser implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
+    public @NonNull String getUsername() {
         return email;
     }
 
@@ -81,71 +88,4 @@ public class AppUser implements UserDetails {
         return status == AppUserStatus.active;
     }
 
-    // -------------------------
-    // Getters & Setters
-    // -------------------------
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public AppUserRole getRole() {
-        return role;
-    }
-
-    public void setRole(AppUserRole role) {
-        this.role = role;
-    }
-
-    public AppUserStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AppUserStatus status) {
-        this.status = status;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getLastActivityAt() {
-        return lastActivityAt;
-    }
-
-    public void setLastActivityAt(OffsetDateTime lastActivityAt) {
-        this.lastActivityAt = lastActivityAt;
-    }
-
-    public Boolean getOnline() {
-        return isOnline;
-    }
-
-    public void setOnline(Boolean online) {
-        isOnline = online;
-    }
-}
+};

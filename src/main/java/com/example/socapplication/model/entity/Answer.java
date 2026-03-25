@@ -2,9 +2,13 @@ package com.example.socapplication.model.entity;
 
 import com.example.socapplication.model.entity.AppUser;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "answer")
 public class Answer {
@@ -27,44 +31,5 @@ public class Answer {
     @Column(name = "sent_at", nullable = false)
     private OffsetDateTime sentAt;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
-
-
-    public AppUser getAppUser() {
-        return appUser;
-    }
-
-    public void setAppUser(AppUser appUser) {
-        this.appUser = appUser;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public OffsetDateTime getSentAt() {
-        return sentAt;
-    }
-
-    public void setSentAt(OffsetDateTime sentAt) {
-        this.sentAt = sentAt;
-    }
 }
