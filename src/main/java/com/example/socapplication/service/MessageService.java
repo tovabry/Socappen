@@ -41,26 +41,25 @@ public class MessageService {
                 .toList();
     }
 
-    public ResponseMessage sendMessage(Long conversationId, SendMessage dto) {
-        // 1. Fetch Conversation
+    public ResponseMessage sendMessage(Long conversationId, String email, String content) {
+
         Conversation conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
 
-        // 2. Fetch sender (AppUser)
-        AppUser sender = appUserRepository.findById(Math.toIntExact(dto.senderId()))
-                .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
 
-        // 3. Create Message entity
+        AppUser sender = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         Message message = new Message();
         message.setConversation(conversation);
         message.setSender(sender);
-        message.setContent(dto.content());
+        message.setContent(content);
         message.setSentAt(OffsetDateTime.now());
 
-        // 4. Save to repository
+
         messageRepository.save(message);
 
-        // 5. Return DTO
+
         return new ResponseMessage(
                 message.getId(),
                 sender.getId(),
@@ -68,7 +67,5 @@ public class MessageService {
                 message.getSentAt()
         );
     }
-
-
 
 }
