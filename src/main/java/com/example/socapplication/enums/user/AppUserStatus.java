@@ -1,4 +1,4 @@
-package com.example.socapplication.user;
+package com.example.socapplication.enums.user;
 
 public enum AppUserStatus {
     active,
