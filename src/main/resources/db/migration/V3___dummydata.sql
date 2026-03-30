@@ -4,7 +4,8 @@ VALUES
     (N'elin@ungdom.se', 'user', N'hashed_user_pw1', 'active'),
     (N'oscar@ungdom.se', 'user', N'hashed_user_pw2', 'active'),
     (N'maria@ungdom.se', 'user', N'hashed_user_pw3', 'active'),
-    (N'jonas@ungdom.se', 'user', N'hashed_user_pw4', 'active');
+    (N'jonas@ungdom.se', 'user', N'hashed_user_pw4', 'active'),
+    (N'systemadmin@resursenheten.se', 'sysadmin', N'hashed_password', 'active');
 GO
 
 INSERT INTO conversation (status)

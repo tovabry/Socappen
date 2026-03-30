@@ -5,6 +5,8 @@ import com.example.socapplication.model.dto.appUserDto.ResponseAppUser;
 import com.example.socapplication.model.dto.login.LoginRequest;
 import com.example.socapplication.security.JwtUtil;
 import com.example.socapplication.service.AppUserService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@Slf4j
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -33,20 +36,37 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
-        );
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request,
+                                                     HttpServletRequest httpRequest) {
+        String ip = getClientIp(httpRequest);
 
-        UserDetails userDetails = appUserService.loadUserByUsername(request.email());
-        String token = jwtUtil.generateToken(userDetails);
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.email(), request.password())
+            );
+            UserDetails userDetails = appUserService.loadUserByUsername(request.email());
+            String token = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(Map.of("token", token));
+            log.info("Inloggning lyckades - email: {}, ip: {}", request.email(), ip);
+            return ResponseEntity.ok(Map.of("token", token));
+
+        } catch (Exception e) {
+            log.warn("Inloggning misslyckades - email: {}, ip: {}", request.email(), ip);
+            throw e;
+        }
     }
 
     @PostMapping("/register")
     public ResponseEntity<ResponseAppUser> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(appUserService.register(request));
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String forwarded = request.getHeader("X-Forwarded-For");
+        if (forwarded != null && !forwarded.isBlank()) {
+            return forwarded.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }
 

@@ -5,7 +5,7 @@ CREATE TABLE app_user
 
     -- Case-insensitive email
     email            NVARCHAR(255) COLLATE Latin1_General_CI_AS NOT NULL UNIQUE,
-    role             VARCHAR(10) NOT NULL CHECK (role IN ('user', 'admin')),
+    role             VARCHAR(10) NOT NULL CHECK (role IN ('user', 'admin', 'sysadmin')),
     password_hash    NVARCHAR(100) NOT NULL,
     status           VARCHAR(20) NOT NULL CHECK (status IN ('active', 'inactive', 'suspended', 'deleted')),
     created_at       DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),

@@ -1,7 +1,7 @@
 package com.example.socapplication.model.dto.appUserDto;
 
-import com.example.socapplication.user.AppUserRole;
-import com.example.socapplication.user.AppUserStatus;
+import com.example.socapplication.enums.user.AppUserRole;
+import com.example.socapplication.enums.user.AppUserStatus;
 
 public record ResponseAppUser(
 Long id,

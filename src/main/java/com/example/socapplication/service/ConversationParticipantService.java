@@ -48,7 +48,7 @@ public class ConversationParticipantService {
                 .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
 
         // 2. Fetch AppUser
-        AppUser appUser = appUserRepository.findById(Math.toIntExact(dto.userId()))
+        AppUser appUser = appUserRepository.findById(dto.userId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // 3. Create ConversationParticipant entity

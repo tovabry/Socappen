@@ -45,8 +45,17 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/me").permitAll()
                         .requestMatchers("/api/question/with-answers").permitAll()
-                        .requestMatchers("/api/question/pending").hasRole("USER")
-                        .requestMatchers("/api/conversations/**").hasRole("USER")
+
+                        // Sysadmin only
+                        .requestMatchers("/api/sysadmin/**").hasRole("SYSADMIN")
+
+                        // Admin and sysadmin
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SYSADMIN")
+
+                        // Regular users and up
+                        .requestMatchers("/api/question/pending").hasAnyRole("USER", "ADMIN", "SYSADMIN")
+                        .requestMatchers("/api/conversations/**").hasAnyRole("USER", "ADMIN", "SYSADMIN")
+
                         .anyRequest().permitAll()
                 )
                 .authenticationProvider(authenticationProvider())
