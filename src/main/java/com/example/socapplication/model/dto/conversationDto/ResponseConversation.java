@@ -1,6 +1,6 @@
 package com.example.socapplication.model.dto.conversationDto;
 
-import com.example.socapplication.user.ConversationStatus;
+import com.example.socapplication.enums.user.ConversationStatus;
 
 import java.time.OffsetDateTime;
 

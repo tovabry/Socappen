@@ -42,7 +42,7 @@ public final class CurrentUser {
         }
 
         try {
-            Integer id = Integer.parseInt(auth.getName());
+            Long id = Long.parseLong(auth.getName());
             return appUserRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("User not found"))
                     .getRole().name();
