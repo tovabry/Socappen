@@ -19,3 +19,12 @@ CREATE TABLE message_log (
                     CONSTRAINT FK_msglog_conv FOREIGN KEY (conversation_id) REFERENCES conversation(id)
 );
 GO
+
+CREATE TABLE audit_log (
+    id BIGINT PRIMARY KEY IDENTITY(1,1),
+    app_user_id BIGINT NOT NULL,
+    ip_address VARCHAR(45),
+    reason VARCHAR(MAX),
+    created_at DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
+)
+GO
