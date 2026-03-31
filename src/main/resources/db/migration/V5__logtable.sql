@@ -4,6 +4,8 @@ CREATE TABLE auth_log (
                           ip_address   VARCHAR(45) NOT NULL,
                           success      BIT NOT NULL,
                           fail_reason  VARCHAR(50),
+                          logged_in_at  DATETIMEOFFSET,
+                          logged_out_at DATETIMEOFFSET,
                           created_at   DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
 );
 GO
