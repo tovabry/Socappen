@@ -27,9 +27,11 @@ public class AppUserController {
 
     }
     @GetMapping("/me")
-    public ResponseEntity<Map<String, String>> getCurrentUser() {
+    public ResponseEntity<Map<String, Object>> getCurrentUser() {
+        Integer id = currentUser.getUserId();
         String email = currentUser.getEmail();
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", id);
         response.put("email", email != null ? email : "Guest");
         return ResponseEntity.ok(response);
     }
