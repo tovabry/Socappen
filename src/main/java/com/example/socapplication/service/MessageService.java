@@ -9,6 +9,9 @@ import com.example.socapplication.repository.AppUserRepository;
 import com.example.socapplication.repository.ConversationRepository;
 import com.example.socapplication.repository.MessageRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -28,9 +31,10 @@ public class MessageService {
         this.appUserRepository = appUserRepository;
     }
 
-    public List<ResponseMessage> findMessagesByConversationId(Long conversationId) {
-
-        return messageRepository.findByConversation_Id(conversationId)
+    public List<ResponseMessage> findMessagesByConversationId(Long conversationId, int page, int size) {
+        System.out.println("PAGE: " + page + " SIZE: " + size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("sentAt").descending());
+        return messageRepository.findByConversation_Id(conversationId, pageable)
                 .stream()
                 .map(message -> new ResponseMessage(
                         message.getId(),

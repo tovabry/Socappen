@@ -27,8 +27,9 @@ public class MessageController {
     }
 
     @GetMapping
-    public List<ResponseMessage> getMessages(@PathVariable Long conversationId) {
-        return messageService.findMessagesByConversationId(conversationId);
+    public List<ResponseMessage> getMessages(@PathVariable Long conversationId, @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "20") int size) {
+        return messageService.findMessagesByConversationId(conversationId, page, size);
     }
 
     @PostMapping

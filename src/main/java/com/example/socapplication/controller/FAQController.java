@@ -1,12 +1,8 @@
 package com.example.socapplication.controller;
 
 import com.example.socapplication.model.dto.faqDto.ResponseFaq;
-import com.example.socapplication.service.CurrentUser;
 import com.example.socapplication.service.FAQService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,7 +20,9 @@ public class FAQController {
     public ResponseFaq getFaqById(@PathVariable Long id) {return faqService.findFaqById(id);}
 
     @GetMapping
-    public List<ResponseFaq> getAllFaqs(){
-        return faqService.findAll();
+    public List<ResponseFaq> getAllFaqs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return faqService.findAll(page, size);
     }
 }
