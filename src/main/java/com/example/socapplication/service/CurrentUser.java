@@ -15,13 +15,13 @@ public final class CurrentUser {
         this.appUserRepository = appUserRepository;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         String email = getEmail();
         if (email == null) return null;
 
-        return Math.toIntExact(appUserRepository.findByEmail(email)
+        return appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"))
-                .getId());
+                .getId();
     }
 
     public String getEmail() {

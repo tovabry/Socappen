@@ -5,7 +5,6 @@ import com.example.socapplication.service.AppUserService;
 import com.example.socapplication.service.CurrentUser;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +27,7 @@ public class AppUserController {
     }
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> getCurrentUser() {
-        Integer id = currentUser.getUserId();
+        Long id = currentUser.getUserId();
         String email = currentUser.getEmail();
         Map<String, Object> response = new HashMap<>();
         response.put("id", id);
