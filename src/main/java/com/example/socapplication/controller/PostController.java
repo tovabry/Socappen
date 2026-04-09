@@ -21,8 +21,9 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponsePost>> findAll() {
-        return ResponseEntity.ok(postService.findAll());
+    public ResponseEntity<List<ResponsePost>> findAll(@RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.ok(postService.findAll(page, size));
     }
 
     @GetMapping("/{id}")

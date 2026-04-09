@@ -8,6 +8,8 @@ import com.example.socapplication.model.entity.Post;
 import com.example.socapplication.repository.AppUserRepository;
 import com.example.socapplication.repository.PostRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,8 +28,10 @@ public class PostService {
         this.appUserRepository = appUserRepository;
     }
 
-    public List<ResponsePost> findAll() {
-        return postRepository.findAll()
+    public List<ResponsePost> findAll(int page, int size) {
+        System.out.println("PAGE: " + page + " SIZE: " + size);
+        Pageable pageable = PageRequest.of(page, size);
+        return postRepository.findAll(pageable)
                 .stream()
                 .map(post -> new ResponsePost(
                         post.getId(),
