@@ -37,6 +37,9 @@ CREATE TABLE post_log (
     post_id BIGINT NOT NULL,
     ip_address VARCHAR(45),
     created_at DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
+
+        CONSTRAINT FK_postlog_user FOREIGN KEY (app_user_id) REFERENCES app_user(id),
+        CONSTRAINT FK_postlog_post FOREIGN KEY (post_id) REFERENCES post(id)
 )
 GO
 
