@@ -21,7 +21,7 @@ public class AuthLogService {
         return repository.findAll().stream()
                 .map(l -> new ResponseAuthLog(
                         l.getId(),
-                        l.getEmail(),
+                        l.getAppUserId(),
                         l.getIpAddress(),
                         l.isSuccess(),
                         l.getFailReason(),
@@ -33,7 +33,7 @@ public class AuthLogService {
 
     public void logLogin(CreateAuthLog dto) {
         repository.save(AuthLog.builder()
-                .email(dto.email())
+                .appUserId(dto.userId())
                 .ipAddress(dto.ipAddress())
                 .success(dto.success())
                 .failReason(dto.failReason())
@@ -42,8 +42,8 @@ public class AuthLogService {
                 .build());
     }
 
-    public void logLogout(String email) {
-        repository.findTopByEmailAndLoggedOutAtIsNullOrderByLoggedInAtDesc(email)
+    public void logLogout(Long userId) {
+        repository.findTopByAppUserIdAndLoggedOutAtIsNullOrderByLoggedInAtDesc(userId)
                 .ifPresent(log -> {
                     log.setLoggedOutAt(OffsetDateTime.now());
                     repository.save(log);

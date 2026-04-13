@@ -3,7 +3,7 @@ package com.example.socapplication.model.dto.authLogDto;
 import java.time.OffsetDateTime;
 
 public record CreateAuthLog(
-        String email,
+        Long userId,
         String ipAddress,
         boolean success,
         String failReason,

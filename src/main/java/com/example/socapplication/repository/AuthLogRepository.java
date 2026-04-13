@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface AuthLogRepository extends ListCrudRepository<AuthLog, Long> {
-    Optional<AuthLog> findTopByEmailAndLoggedOutAtIsNullOrderByLoggedInAtDesc(String email);
+    Optional<AuthLog> findTopByAppUserIdAndLoggedOutAtIsNullOrderByLoggedInAtDesc(Long userId);
 }

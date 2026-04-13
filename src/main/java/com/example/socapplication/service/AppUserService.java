@@ -6,13 +6,16 @@ import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.repository.AppUserRepository;
 import com.example.socapplication.enums.user.AppUserRole;
 import com.example.socapplication.enums.user.AppUserStatus;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -72,4 +75,10 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
+
+    public AppUser findByEmail(String email) {
+        return appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
 }

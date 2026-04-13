@@ -19,7 +19,7 @@ public class AuthLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email;
+    private Long appUserId;
     private String ipAddress;
     private boolean success;
     private String failReason;

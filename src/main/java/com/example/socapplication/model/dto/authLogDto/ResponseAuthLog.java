@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 
 public record ResponseAuthLog(
         Long id,
-        String email,
+        Long userId,
         String ipAddress,
         boolean success,
         String failReason,

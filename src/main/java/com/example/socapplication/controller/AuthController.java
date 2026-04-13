@@ -45,6 +45,7 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request,
                                                      HttpServletRequest httpRequest) {
         String ip = getClientIp(httpRequest);
+        Long userId = appUserService.findByEmail(request.email()).getId();
 
         try {
             authenticationManager.authenticate(
@@ -54,14 +55,14 @@ public class AuthController {
             UserDetails userDetails = appUserService.loadUserByUsername(request.email());
             String token = jwtUtil.generateToken(userDetails);
 
-            log.info("Inloggning lyckades - email: {}, ip: {}", request.email(), ip);
-            authLogService.logLogin(new CreateAuthLog(request.email(), ip, true, null, OffsetDateTime.now()));
+            log.info("Inloggning lyckades - user id: {}, ip: {}", userId, ip);
+            authLogService.logLogin(new CreateAuthLog(userId, ip, true, null, OffsetDateTime.now()));
 
             return ResponseEntity.ok(Map.of("token", token));
 
         } catch (Exception e) {
-            log.warn("Inloggning misslyckades - email: {}, ip: {}", request.email(), ip);
-            authLogService.logLogin(new CreateAuthLog(request.email(), ip, false, "BAD_CREDENTIALS", null));
+            log.warn("Inloggning misslyckades - user id: {}, ip: {}", userId, ip);
+            authLogService.logLogin(new CreateAuthLog(userId, ip, false, "BAD_CREDENTIALS", null));
             throw e;
         }
     }
@@ -72,10 +73,6 @@ public class AuthController {
     }
 
     private String getClientIp(HttpServletRequest request) {
-        String forwarded = request.getHeader("X-Forwarded-For");
-        if (forwarded != null && !forwarded.isBlank()) {
-            return forwarded.split(",")[0].trim();
-        }
         return request.getRemoteAddr();
     }
 }
