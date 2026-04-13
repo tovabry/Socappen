@@ -55,6 +55,7 @@ public class SecurityConfig {
                         // Regular users and up
                         .requestMatchers("/api/question/pending").hasAnyRole("USER", "ADMIN", "SYSADMIN")
                         .requestMatchers("/api/conversations/**").hasAnyRole("USER", "ADMIN", "SYSADMIN")
+                        .requestMatchers("/api/messages/**").hasAnyRole("USER", "ADMIN", "SYSADMIN")
 
                         .anyRequest().permitAll()
                 )
