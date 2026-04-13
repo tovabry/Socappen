@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -26,5 +28,8 @@ public class Conversation {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 10, nullable = false)
     private ConversationStatus status;
+
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ConversationParticipant> participants = new ArrayList<>();
 
 }

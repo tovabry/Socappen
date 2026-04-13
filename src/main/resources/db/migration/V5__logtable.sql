@@ -1,12 +1,14 @@
 CREATE TABLE auth_log (
                           id           BIGINT PRIMARY KEY IDENTITY(1,1),
-                      /*    email        NVARCHAR(255) NOT NULL, */
+                          app_user_id      BIGINT,
                           ip_address   VARCHAR(45) NOT NULL,
                           success      BIT NOT NULL,
                           fail_reason  VARCHAR(50),
                           logged_in_at  DATETIMEOFFSET,
                           logged_out_at DATETIMEOFFSET,
                           created_at   DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
+
+                    CONSTRAINT FK_authlog_user_id FOREIGN KEY (app_user_id) REFERENCES app_user(id)
 );
 GO
 
