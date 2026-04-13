@@ -1,8 +1,10 @@
 package com.example.socapplication.controller;
 
 import com.example.socapplication.model.dto.conversationDto.ResponseConversation;
+import com.example.socapplication.model.dto.participantDto.AddParticipant;
 import com.example.socapplication.service.ConversationService;
 import com.example.socapplication.service.CurrentUser;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +40,13 @@ public class ConversationController {
         Long userId = currentUser.getUserId();
         List<ResponseConversation> conversations = conversationService.findConversationBasedOnCurrentUser(userId, page, size);
         return ResponseEntity.ok(conversations);
+    }
+
+    @PostMapping
+    public ResponseEntity<ResponseConversation> createConversation(
+            @RequestBody AddParticipant dto) {
+
+        ResponseConversation response = conversationService.createConversation(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
