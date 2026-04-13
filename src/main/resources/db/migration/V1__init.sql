@@ -75,6 +75,7 @@ GO
 CREATE TABLE frequently_asked_question
 (
     id         BIGINT PRIMARY KEY IDENTITY (1,1),
+    app_user_id BIGINT NOT NULL,
     question   NVARCHAR(MAX) NOT NULL,
     answer     NVARCHAR(MAX) NOT NULL
 )
