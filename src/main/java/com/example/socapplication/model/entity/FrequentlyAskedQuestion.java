@@ -12,6 +12,10 @@ public class FrequentlyAskedQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "app_user_id", nullable = false)
+    private AppUser appUserId;
+
     @Column(name = "question", nullable = false)
     private String question;
 
