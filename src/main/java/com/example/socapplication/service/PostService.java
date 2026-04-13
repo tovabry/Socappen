@@ -74,7 +74,7 @@ public class PostService {
                 .toList();
     }
 
-    public void createPost(AddPost dto) {
+    public Post createPost(AddPost dto) {
         AppUser user = appUserRepository.findById(dto.userId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -83,7 +83,7 @@ public class PostService {
         post.setTitle(dto.title());
         post.setContent(dto.content());
 
-        postRepository.save(post);
+        return postRepository.save(post);
     }
 
     public void updatePost(Long id, UpdatePost dto) {
