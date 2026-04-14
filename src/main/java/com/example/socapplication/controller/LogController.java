@@ -2,10 +2,10 @@ package com.example.socapplication.controller;
 
 import com.example.socapplication.model.dto.auditLogDto.ResponseAuditLog;
 import com.example.socapplication.model.dto.authLogDto.ResponseAuthLog;
+import com.example.socapplication.model.dto.faqLogDto.ResponseFaqLog;
 import com.example.socapplication.model.dto.messageLogDto.ResponseMessageLog;
-import com.example.socapplication.service.AuditLogService;
-import com.example.socapplication.service.AuthLogService;
-import com.example.socapplication.service.MessageLogService;
+import com.example.socapplication.model.dto.postLogDto.ResponsePostLog;
+import com.example.socapplication.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +24,8 @@ public class LogController {
     private final AuthLogService authLogService;
     private final MessageLogService messageLogService;
     private final AuditLogService auditLogService;
+    private final PostLogService postLogService;
+    private final FaqLogServie faqLogService;
 
     @GetMapping("/auth")
     public ResponseEntity<List<ResponseAuthLog>> getAuthLogs() {
@@ -38,5 +40,15 @@ public class LogController {
     @GetMapping("/audit")
     public ResponseEntity<List<ResponseAuditLog>> getAuditLogs() {
         return ResponseEntity.ok(auditLogService.findAll());
+    }
+
+    @GetMapping("/post")
+    public ResponseEntity<List<ResponsePostLog>> getPostLogs(){
+        return ResponseEntity.ok(postLogService.findAll());
+    }
+
+    @GetMapping("/faq")
+    public ResponseEntity<List<ResponseFaqLog>> getFaqLogs() {
+        return ResponseEntity.ok(faqLogService.findAll());
     }
 }
