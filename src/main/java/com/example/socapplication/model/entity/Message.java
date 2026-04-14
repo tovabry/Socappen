@@ -1,6 +1,5 @@
 package com.example.socapplication.model.entity;
 
-import com.example.socapplication.model.entity.AppUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +24,7 @@ public class Message {
     @JoinColumn(name = "sender_id", nullable = false)
     private AppUser sender;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
     @Column(name = "sent_at", nullable = false)
