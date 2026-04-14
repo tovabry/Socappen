@@ -1,11 +1,11 @@
-INSERT INTO app_user (email, role, password_hash, status)
+INSERT INTO app_user (email, role_id, password_hash, status)
 VALUES
-    (N'admin@resursenheten.se', 'admin', N'hashed_admin_pw', 'active'),
-    (N'elin@ungdom.se', 'user', N'hashed_user_pw1', 'active'),
-    (N'oscar@ungdom.se', 'user', N'hashed_user_pw2', 'active'),
-    (N'maria@ungdom.se', 'user', N'hashed_user_pw3', 'active'),
-    (N'jonas@ungdom.se', 'user', N'hashed_user_pw4', 'active'),
-    (N'systemadmin@resursenheten.se', 'sysadmin', N'hashed_password', 'active');
+    (N'admin@resursenheten.se', 2, N'hashed_admin_pw', 'active'),
+    (N'elin@ungdom.se', 1, N'hashed_user_pw1', 'active'),
+    (N'oscar@ungdom.se', 1, N'hashed_user_pw2', 'active'),
+    (N'maria@ungdom.se', 1, N'hashed_user_pw3', 'active'),
+    (N'jonas@ungdom.se', 1, N'hashed_user_pw4', 'active'),
+    (N'systemadmin@resursenheten.se', 3, N'hashed_password', 'active');
 GO
 
 INSERT INTO conversation (status)
@@ -52,9 +52,9 @@ VALUES
     (3, 1, N'Du kan göra en anonym orosanmälan via kommunens webbplats eller ringa socialtjänsten.');
 GO
 
-INSERT INTO frequently_asked_question (question, answer)
+INSERT INTO frequently_asked_question (app_user_id, question, answer)
 VALUES
-    (N'Hur kan jag få stöd med läxorna?', N'Vi erbjuder läxhjälp och stödgrupper för ungdomar.'),
-    (N'Kan jag träffa en kurator anonymt?', N'Du kan kontakta kuratorn direkt, vissa uppgifter kan behöva delas med föräldrar beroende på ålder.'),
-    (N'Hur gör jag en orosanmälan anonymt?', N'Du kan fylla i formuläret på kommunens webbplats eller ringa socialtjänsten och vara anonym.');
+    (1, N'Hur kan jag få stöd med läxorna?', N'Vi erbjuder läxhjälp och stödgrupper för ungdomar.'),
+    (1, N'Kan jag träffa en kurator anonymt?', N'Du kan kontakta kuratorn direkt, vissa uppgifter kan behöva delas med föräldrar beroende på ålder.'),
+    (5, N'Hur gör jag en orosanmälan anonymt?', N'Du kan fylla i formuläret på kommunens webbplats eller ringa socialtjänsten och vara anonym.');
 GO

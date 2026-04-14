@@ -1,6 +1,5 @@
 package com.example.socapplication.model.entity;
 
-import com.example.socapplication.enums.user.AppUserRole;
 import com.example.socapplication.enums.user.AppUserStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,9 +29,9 @@ public class AppUser implements UserDetails {
     @Column(name = "password_hash", nullable = false, length = 100)
     private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", length = 10, nullable = false)
-    private AppUserRole role;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20, nullable = false)
@@ -55,7 +54,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name().toUpperCase()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()));
     }
 
     @Override
@@ -88,4 +87,4 @@ public class AppUser implements UserDetails {
         return status == AppUserStatus.active;
     }
 
-};
+}

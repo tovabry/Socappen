@@ -1,3 +1,13 @@
+
+CREATE TABLE role
+(
+    id   BIGINT PRIMARY KEY IDENTITY (1,1),
+    name VARCHAR(20) NOT NULL UNIQUE
+);
+
+INSERT INTO role (name) VALUES ('user'), ('admin'), ('sysadmin');
+GO
+
 CREATE TABLE app_user
 (
     -- 1,1 = seed,increment
@@ -5,12 +15,14 @@ CREATE TABLE app_user
 
     -- Case-insensitive email
     email            NVARCHAR(255) COLLATE Latin1_General_CI_AS NOT NULL UNIQUE,
-    role             VARCHAR(10) NOT NULL CHECK (role IN ('user', 'admin', 'sysadmin')),
+    role_id          BIGINT NOT NULL,
     password_hash    NVARCHAR(100) NOT NULL,
     status           VARCHAR(20) NOT NULL CHECK (status IN ('active', 'inactive', 'suspended', 'deleted')),
     created_at       DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
     last_activity_at DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
-    is_online        BIT NOT NULL            DEFAULT 0
+    is_online        BIT NOT NULL            DEFAULT 0,
+
+    CONSTRAINT FK_app_user_role FOREIGN KEY (role_id) REFERENCES role (id) ON DELETE CASCADE
 );
 GO
 

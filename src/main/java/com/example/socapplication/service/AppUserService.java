@@ -3,10 +3,10 @@ package com.example.socapplication.service;
 import com.example.socapplication.model.dto.appUserDto.RegisterRequest;
 import com.example.socapplication.model.dto.appUserDto.ResponseAppUser;
 import com.example.socapplication.model.entity.AppUser;
+import com.example.socapplication.model.entity.Role;
 import com.example.socapplication.repository.AppUserRepository;
-import com.example.socapplication.enums.user.AppUserRole;
 import com.example.socapplication.enums.user.AppUserStatus;
-import jakarta.servlet.http.HttpSession;
+import com.example.socapplication.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
@@ -26,10 +26,12 @@ public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
-    public AppUserService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
+    public AppUserService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.appUserRepository = appUserRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     public ResponseAppUser register(RegisterRequest request) {
@@ -37,10 +39,14 @@ public class AppUserService implements UserDetailsService {
             throw new IllegalArgumentException("Email already in use");
         }
 
+        Role userRole = roleRepository.findByName("user")
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role not found"));
+
+
         AppUser user = new AppUser();
         user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
-        user.setRole(AppUserRole.user);
+        user.setRole(userRole);
         user.setStatus(AppUserStatus.active);
         user.setCreatedAt(OffsetDateTime.now());
         user.setLastActivityAt(OffsetDateTime.now());
@@ -52,7 +58,7 @@ public class AppUserService implements UserDetailsService {
                 saved.getId(),
                 saved.getEmail(),
                 saved.getStatus(),
-                saved.getRole(),
+                saved.getRole().getName(),
                 saved.getIsOnline()
         );
     }
@@ -64,7 +70,7 @@ public class AppUserService implements UserDetailsService {
                         appUser.getId(),
                         appUser.getEmail(),
                         appUser.getStatus(),
-                        appUser.getRole(),
+                        appUser.getRole().getName(),
                         appUser.getIsOnline()
                 ))
                 .toList();

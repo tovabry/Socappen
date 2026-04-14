@@ -1,15 +1,16 @@
 package com.example.socapplication.service;
 
-import com.example.socapplication.enums.user.AppUserRole;
 import com.example.socapplication.model.dto.adminPermissionDto.AddAdminPermission;
 import com.example.socapplication.model.dto.adminPermissionDto.ResponseAdminPermission;
 import com.example.socapplication.model.dto.permissionDto.ResponsePermission;
 import com.example.socapplication.model.entity.AdminPermission;
 import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.model.entity.Permission;
+import com.example.socapplication.model.entity.Role;
 import com.example.socapplication.repository.AdminPermissionRepository;
 import com.example.socapplication.repository.AppUserRepository;
 import com.example.socapplication.repository.PermissionRepository;
+import com.example.socapplication.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,15 @@ public class AdminPermissionService {
     private final AdminPermissionRepository adminPermissionRepository;
     private final AppUserRepository appUserRepository;
     private final PermissionRepository permissionRepository;
+    private final RoleRepository roleRepository;
 
     public AdminPermissionService(AdminPermissionRepository adminPermissionRepository,
                                   AppUserRepository appUserRepository,
-                                  PermissionRepository permissionRepository) {
+                                  PermissionRepository permissionRepository, RoleRepository roleRepository) {
         this.adminPermissionRepository = adminPermissionRepository;
         this.appUserRepository = appUserRepository;
         this.permissionRepository = permissionRepository;
+        this.roleRepository = roleRepository;
     }
 
     public List<ResponsePermission> findAllPermissions() {
@@ -65,7 +68,7 @@ public class AdminPermissionService {
         Permission permission = permissionRepository.findById(dto.permissionId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        if (user.getRole() != AppUserRole.admin) {
+        if (!user.getRole().getName().equals("admin")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not an admin");
         }
 
@@ -85,16 +88,22 @@ public class AdminPermissionService {
     public void promoteToAdmin(Long userId) {
         AppUser user = appUserRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        user.setRole(AppUserRole.admin);
+        Role adminRole = roleRepository.findByName("admin")
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role not found"));
+
+        user.setRole(adminRole);
         appUserRepository.save(user);
     }
 
     public void demoteToUser(Long userId) {
         AppUser user = appUserRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        user.setRole(AppUserRole.user);
-        adminPermissionRepository.findByAppUser_Id(userId)
-                .forEach(adminPermissionRepository::delete);
+
+        Role userRole = roleRepository.findByName("user")
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role not found"));
+
+        user.setRole(userRole);
+        adminPermissionRepository.deleteAll(adminPermissionRepository.findByAppUser_Id(userId));
         appUserRepository.save(user);
     }
 }
