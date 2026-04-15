@@ -32,6 +32,7 @@ public class AppUserController {
         Map<String, Object> response = new HashMap<>();
         response.put("id", id);
         response.put("email", email != null ? email : "Guest");
+        response.put("role", currentUser.getRole());
         return ResponseEntity.ok(response);
     }
 
@@ -39,25 +40,4 @@ public class AppUserController {
     public List<ResponseAppUser> getAllUsers() {
         return appUserService.findAllUsers();
     }
-
-
-  /*  @GetMapping("/home")
-  public String home(Model model) {
-        String email = currentUser.getEmail();
-        if (email == null) {
-            email = "Guest"; // or leave it blank
-        }
-        model.addAttribute("email", email);
-        return "home";
-    }
-
-    @GetMapping("/profile")
-    public String profile(Model model) {
-        var authentication = currentUser.getRole();
-        var user = currentUser.getEmail();
-        model.addAttribute("authentication", authentication);
-        model.addAttribute("user", user);
-        return "profile";
-    }
-*/
 }
