@@ -8,6 +8,7 @@ import com.example.socapplication.security.JwtUtil;
 import com.example.socapplication.service.AppUserService;
 import com.example.socapplication.service.AuthLogService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseCookie;
 
+
+import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,8 +45,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request,
-                                                     HttpServletRequest httpRequest) {
+    public ResponseEntity<Void> login(@RequestBody LoginRequest request,
+                                      HttpServletRequest httpRequest,
+                                      HttpServletResponse httpResponse) {
         String ip = getClientIp(httpRequest);
         Long userId = appUserService.findByEmail(request.email()).getId();
 
@@ -55,16 +59,45 @@ public class AuthController {
             UserDetails userDetails = appUserService.loadUserByUsername(request.email());
             String token = jwtUtil.generateToken(userDetails);
 
+            log.info("Generated token length: {}", token.length());
+            log.info("Generated token: {}", token);
+
+            ResponseCookie cookie = ResponseCookie.from("token", token)
+                    .httpOnly(true)
+                    .secure(false) //change to true in production
+                    .path("/")
+                    .maxAge(Duration.ofDays(1))
+                    .sameSite("Lax") //blocks cookies on cross-site requests
+                    .domain("localhost")
+                    .build();
+
+            httpResponse.addHeader("Set-Cookie", cookie.toString());
+
             log.info("Inloggning lyckades - user id: {}, ip: {}", userId, ip);
             authLogService.logLogin(new CreateAuthLog(userId, ip, true, null, OffsetDateTime.now()));
 
-            return ResponseEntity.ok(Map.of("token", token));
+            return ResponseEntity.ok().build();
 
         } catch (Exception e) {
             log.warn("Inloggning misslyckades - user id: {}, ip: {}", userId, ip);
             authLogService.logLogin(new CreateAuthLog(userId, ip, false, "BAD_CREDENTIALS", null));
             throw e;
         }
+    }
+
+    //frontend must send CSRF token or logout will fail with 403
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Lax")
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/register")

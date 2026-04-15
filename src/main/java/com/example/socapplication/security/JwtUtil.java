@@ -35,9 +35,13 @@ public class JwtUtil {
         return getClaims(token).getSubject();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        return extractEmail(token).equals(userDetails.getUsername())
-                && !getClaims(token).getExpiration().before(new Date());
+    public boolean isTokenValid(String token) {
+        try {
+            Claims claims = getClaims(token);
+            return claims.getSubject() != null && claims.getExpiration().after(new Date());
+        } catch (Exception _) {
+            return false;
+        }
     }
 
     private Claims getClaims(String token) {
