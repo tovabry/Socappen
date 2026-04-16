@@ -31,7 +31,7 @@ public class AppUserController {
         String email = currentUser.getEmail();
         Map<String, Object> response = new HashMap<>();
         response.put("id", id);
-        response.put("email", email != null ? email : "Guest");
+        response.put("email", email);
         response.put("role", currentUser.getRole());
         return ResponseEntity.ok(response);
     }
