@@ -8,7 +8,7 @@ CREATE TABLE auth_log (
                           logged_out_at DATETIMEOFFSET,
                           created_at   DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
 
-                    CONSTRAINT FK_authlog_user_id FOREIGN KEY (app_user_id) REFERENCES app_user(id)
+                    CONSTRAINT FK_authlog_user_id FOREIGN KEY (app_user_id) REFERENCES app_user(id) ON DELETE SET NULL
 );
 GO
 
@@ -19,8 +19,8 @@ CREATE TABLE message_log (
     ip_address      VARCHAR(45),
     created_at      DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
 
-                    CONSTRAINT FK_msglog_user FOREIGN KEY (app_user_id) REFERENCES app_user(id),
-                    CONSTRAINT FK_msglog_conv FOREIGN KEY (conversation_id) REFERENCES conversation(id)
+                    CONSTRAINT FK_msglog_user FOREIGN KEY (app_user_id) REFERENCES app_user(id) ON DELETE SET NULL,
+                    CONSTRAINT FK_msglog_conv FOREIGN KEY (conversation_id) REFERENCES conversation(id) ON DELETE SET NULL
 );
 GO
 
@@ -40,8 +40,8 @@ CREATE TABLE post_log (
     ip_address VARCHAR(45),
     created_at DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
 
-        CONSTRAINT FK_postlog_user FOREIGN KEY (app_user_id) REFERENCES app_user(id),
-        CONSTRAINT FK_postlog_post FOREIGN KEY (post_id) REFERENCES post(id)
+        CONSTRAINT FK_postlog_user FOREIGN KEY (app_user_id) REFERENCES app_user(id) ON DELETE SET NULL,
+        CONSTRAINT FK_postlog_post FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE SET NULL
 )
 GO
 
@@ -52,7 +52,7 @@ CREATE TABLE faq_log (
     ip_address VARCHAR(45),
     created_at DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
 
-        CONSTRAINT FK_faqlog_user FOREIGN KEY (app_user_id) REFERENCES app_user(id),
-        CONSTRAINT FK_faglog_faq FOREIGN KEY (faq_id) REFERENCES frequently_asked_question(id)
+        CONSTRAINT FK_faqlog_user FOREIGN KEY (app_user_id) REFERENCES app_user(id) ON DELETE SET NULL,
+        CONSTRAINT FK_faglog_faq FOREIGN KEY (faq_id) REFERENCES frequently_asked_question(id) ON DELETE SET NULL
 )
 GO
