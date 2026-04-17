@@ -44,3 +44,6 @@ VALUES
     (1, 'Post 1', N'Det här är ny spännande information från resursenheten.'),
     (1, 'Post 2', N'Mer info från resursenheten');
 GO
+
+INSERT INTO post_media (post_id, media_type, url) VALUES (1, 'image', 'https://glanna.se/wp-content/uploads/kattungar.jpg');
+INSERT INTO post_media (post_id, media_type, url) VALUES (2, 'video', 'https://youtube.com/shorts/TitjksDB_kU?si=qoyCb7vDUHydC4MK');
