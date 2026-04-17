@@ -1,7 +1,6 @@
 package com.example.socapplication.service;
 
 import com.example.socapplication.model.dto.messageDto.ResponseMessage;
-import com.example.socapplication.model.dto.messageDto.SendMessage;
 import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.model.entity.Conversation;
 import com.example.socapplication.model.entity.Message;
@@ -32,7 +31,6 @@ public class MessageService {
     }
 
     public List<ResponseMessage> findMessagesByConversationId(Long conversationId, int page, int size) {
-        System.out.println("PAGE: " + page + " SIZE: " + size);
         Pageable pageable = PageRequest.of(page, size, Sort.by("sentAt").descending());
         return messageRepository.findByConversation_Id(conversationId, pageable)
                 .stream()
