@@ -1,5 +1,4 @@
 /*Drop and recreate database*/
-
 USE master;
 GO
 ALTER DATABASE socapp SET SINGLE_USER WITH ROLLBACK IMMEDIATE;

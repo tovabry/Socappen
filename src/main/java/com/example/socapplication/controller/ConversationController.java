@@ -6,6 +6,7 @@ import com.example.socapplication.service.ConversationService;
 import com.example.socapplication.service.CurrentUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,15 @@ public class ConversationController {
         this.currentUser = currentUser;
     }
 
-    @GetMapping()
-    public List<ResponseConversation> getAllConversations() {
-        return conversationService.findAllConversations();
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<ResponseConversation>> getAllConversations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        Long userId = currentUser.getUserId();
+        List<ResponseConversation> conversations = conversationService.findAllConversations(userId, page, size);
+        return ResponseEntity.ok(conversations);
     }
 
     @GetMapping("/{id}")
@@ -43,10 +50,19 @@ public class ConversationController {
     }
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseConversation> createConversation(
             @RequestBody AddParticipant dto) {
 
         ResponseConversation response = conversationService.createConversation(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/{conversationId}/join")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseConversation> joinConversation(@PathVariable Long conversationId) {
+        Long adminId = currentUser.getUserId();
+        ResponseConversation response = conversationService.joinConversation(conversationId, adminId);
+        return ResponseEntity.ok(response);
     }
 }

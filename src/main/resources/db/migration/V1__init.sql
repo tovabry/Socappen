@@ -49,7 +49,6 @@ GO
 CREATE TABLE message
 (
     id               BIGINT PRIMARY KEY IDENTITY (1,1),
-
     conversation_id  BIGINT NOT NULL,
     sender_id        BIGINT NOT NULL,
     content          NVARCHAR(1000) NOT NULL,
