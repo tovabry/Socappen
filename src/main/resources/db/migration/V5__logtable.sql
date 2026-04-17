@@ -30,6 +30,7 @@ CREATE TABLE audit_log (
     ip_address VARCHAR(45),
     reason VARCHAR(MAX),
     created_at DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
+                       CONSTRAINT FK_auditlog_user FOREIGN KEY (app_user_id) REFERENCES app_user(id) ON DELETE SET NULL
 )
 GO
 
@@ -53,6 +54,6 @@ CREATE TABLE faq_log (
     created_at DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
 
         CONSTRAINT FK_faqlog_user FOREIGN KEY (app_user_id) REFERENCES app_user(id) ON DELETE SET NULL,
-        CONSTRAINT FK_faglog_faq FOREIGN KEY (faq_id) REFERENCES frequently_asked_question(id) ON DELETE SET NULL
+        CONSTRAINT FK_faqlog_faq FOREIGN KEY (faq_id) REFERENCES frequently_asked_question(id) ON DELETE SET NULL
 )
 GO

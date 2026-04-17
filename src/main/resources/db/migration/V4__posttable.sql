@@ -4,10 +4,7 @@ CREATE TABLE post (
                       title       NVARCHAR(200) NOT NULL,
                       content     NVARCHAR(MAX) NOT NULL,
                       created_at  DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
-                      updated_at  DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
-
-                      CONSTRAINT FK_post_user FOREIGN KEY (app_user_id)
-                          REFERENCES app_user(id) ON DELETE CASCADE
+                      updated_at  DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
 );
 GO
 
