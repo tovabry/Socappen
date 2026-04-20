@@ -1,10 +1,10 @@
 package com.example.socapplication.service;
 
 import com.example.socapplication.model.dto.conversationDto.ResponseConversation;
-import com.example.socapplication.model.dto.participantDto.AddParticipant;
 import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.model.entity.Conversation;
 import com.example.socapplication.model.entity.ConversationParticipant;
+import com.example.socapplication.model.entity.ConversationParticipantId;
 import com.example.socapplication.repository.AppUserRepository;
 import com.example.socapplication.repository.ConversationRepository;
 import jakarta.transaction.Transactional;
@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import com.example.socapplication.model.dto.conversationDto.CreateConversation;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -27,10 +28,13 @@ public class ConversationService {
 
     private final ConversationRepository conversationRepository;
     private final AppUserRepository appUserRepository;
+    private final ConversationParticipantService conversationParticipantService;
 
-    public ConversationService(ConversationRepository conversationRepository, AppUserRepository appUserRepository) {
+    public ConversationService(ConversationRepository conversationRepository, AppUserRepository appUserRepository, ConversationParticipantService conversationParticipantService) {
         this.conversationRepository = conversationRepository;
         this.appUserRepository = appUserRepository;
+
+        this.conversationParticipantService = conversationParticipantService;
     }
 
     public List<ResponseConversation> findAllConversations(Long requesterId, int page, int size) {
@@ -58,7 +62,7 @@ public class ConversationService {
     public ResponseConversation findConversationById(Long id) {
 
         var conversation = conversationRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conversation not found"));
 
         return new ResponseConversation(
                 conversation.getId(),
@@ -85,7 +89,7 @@ public class ConversationService {
         );
     }
 
-    public ResponseConversation createConversation(AddParticipant dto) {
+    public ResponseConversation createConversation(CreateConversation dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isUser = authentication != null &&
@@ -96,21 +100,24 @@ public class ConversationService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only users can create conversations");
         }
 
-        AppUser user = appUserRepository.findById(dto.userId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
         Conversation conversation = new Conversation();
         conversation.setStatus(active);
         conversation.setCreatedAt(OffsetDateTime.now());
         conversation.setLastActivityAt(OffsetDateTime.now());
         Conversation savedConversation = conversationRepository.save(conversation);
 
-        ConversationParticipant participant = new ConversationParticipant();
-        participant.setAppUser(user);
-        participant.setConversation(savedConversation);
-        savedConversation.getParticipants().add(participant);
+        for (Long userId : dto.participantIds()) {
+            AppUser user = appUserRepository.findById(userId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + userId));
 
-        conversationRepository.save(savedConversation);
+            ConversationParticipant participant = new ConversationParticipant();
+            participant.setAppUser(user);
+            participant.setConversation(savedConversation);
+            participant.setJoinedAt(OffsetDateTime.now());
+            participant.setId(new ConversationParticipantId(savedConversation.getId(), user.getId()));
+            conversationParticipantService.save(participant);
+        }
+
         return toResponse(savedConversation);
     }
 
@@ -141,9 +148,11 @@ public class ConversationService {
         ConversationParticipant participant = new ConversationParticipant();
         participant.setAppUser(admin);
         participant.setConversation(conversation);
+        participant.setId(new ConversationParticipantId(conversationId, adminId));
+        participant.setJoinedAt(OffsetDateTime.now());
         conversation.getParticipants().add(participant);
 
-        conversationRepository.save(conversation);
+        conversationParticipantService.save(participant);
         return toResponse(conversation);
     }
 }

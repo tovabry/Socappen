@@ -1,6 +1,5 @@
 package com.example.socapplication.model.entity;
 
-import com.example.socapplication.model.entity.AppUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

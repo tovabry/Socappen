@@ -1,7 +1,7 @@
 package com.example.socapplication.controller;
 
+import com.example.socapplication.model.dto.conversationDto.CreateConversation;
 import com.example.socapplication.model.dto.conversationDto.ResponseConversation;
-import com.example.socapplication.model.dto.participantDto.AddParticipant;
 import com.example.socapplication.service.ConversationService;
 import com.example.socapplication.service.CurrentUser;
 import org.springframework.http.HttpStatus;
@@ -52,7 +52,7 @@ public class ConversationController {
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseConversation> createConversation(
-            @RequestBody AddParticipant dto) {
+            @RequestBody CreateConversation dto) {
 
         ResponseConversation response = conversationService.createConversation(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

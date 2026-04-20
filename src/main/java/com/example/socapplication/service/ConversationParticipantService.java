@@ -70,4 +70,8 @@ public class ConversationParticipantService {
                 participant.getJoinedAt()
         );
     }
+
+    public void save(ConversationParticipant participant) {
+        conversationParticipantRepository.save(participant);
+    }
 }
