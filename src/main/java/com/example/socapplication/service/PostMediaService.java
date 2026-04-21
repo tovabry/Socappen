@@ -31,6 +31,7 @@ public class PostMediaService {
         return postMediaRepository.findAll()
                 .stream()
                 .map(media -> new ResponsePostMedia(
+                        media.getId(),
                         media.getPostId().getId(),
                         media.getMediaType().name(),
                         media.getUrl(),
@@ -42,6 +43,7 @@ public class PostMediaService {
     public ResponsePostMedia findById(Long id) {
         return postMediaRepository.findById(id)
                 .map(media -> new ResponsePostMedia(
+                        media.getId(),
                         media.getPostId().getId(),
                         media.getMediaType().name(),
                         media.getUrl(),
@@ -57,6 +59,7 @@ public class PostMediaService {
         return postMediaRepository.findByPostId_Id(postId)
                 .stream()
                 .map(media -> new ResponsePostMedia(
+                        media.getId(),
                         media.getPostId().getId(),
                         media.getMediaType().name(),
                         media.getUrl(),
