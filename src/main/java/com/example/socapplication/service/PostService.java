@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -29,7 +30,6 @@ public class PostService {
     }
 
     public List<ResponsePost> findAll(int page, int size) {
-        System.out.println("PAGE: " + page + " SIZE: " + size);
         Pageable pageable = PageRequest.of(page, size);
         return postRepository.findAll(pageable)
                 .stream()
@@ -82,6 +82,8 @@ public class PostService {
         post.setAppUserId(user);
         post.setTitle(dto.title());
         post.setContent(dto.content());
+        post.setCreatedAt(OffsetDateTime.now());
+        post.setUpdatedAt(OffsetDateTime.now());
 
         return postRepository.save(post);
     }
@@ -91,6 +93,7 @@ public class PostService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         post.setContent(dto.content());
+        post.setUpdatedAt(OffsetDateTime.now());
 
         postRepository.save(post);
     }
