@@ -92,6 +92,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
+        post.setTitle(dto.title());
         post.setContent(dto.content());
         post.setUpdatedAt(OffsetDateTime.now());
 
