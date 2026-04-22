@@ -74,7 +74,7 @@ public class PostMediaService {
 
         PostMedia media = new PostMedia();
         media.setPostId(post);
-        media.setMediaType(MediaType.valueOf(dto.mediaType().toUpperCase()));
+        media.setMediaType(MediaType.valueOf(dto.mediaType()));
         media.setUrl(dto.url());
         media.setSortOrder(dto.sortOrder());
 
