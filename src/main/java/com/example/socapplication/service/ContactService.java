@@ -34,6 +34,7 @@ public class ContactService {
                 .stream()
                 .map(contact -> new ResponseContact(
                         contact.getId(),
+                        contact.getAppUserId().getId(),
                         contact.getTitle(),
                         contact.getUrl(),
                         contact.getMail(),
@@ -48,6 +49,7 @@ public class ContactService {
         return contactRepository.findById(id)
                 .map(contact -> new ResponseContact(
                         contact.getId(),
+                        contact.getAppUserId().getId(),
                         contact.getTitle(),
                         contact.getUrl(),
                         contact.getMail(),
@@ -66,6 +68,7 @@ public class ContactService {
                 .stream()
                 .map(contact -> new ResponseContact(
                         contact.getId(),
+                        contact.getAppUserId().getId(),
                         contact.getTitle(),
                         contact.getUrl(),
                         contact.getMail(),
