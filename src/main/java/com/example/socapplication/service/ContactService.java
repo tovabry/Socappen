@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -89,6 +90,8 @@ public class ContactService {
         contact.setUrl(dto.img_url());
         contact.setMail(dto.mail());
         contact.setPhone(dto.phone());
+        contact.setCreatedAt(OffsetDateTime.now());
+        contact.setUpdatedAt(OffsetDateTime.now());
         contactRepository.save(contact);
     }
 
@@ -100,6 +103,7 @@ public class ContactService {
         contact.setUrl(dto.img_url());
         contact.setMail(dto.mail());
         contact.setPhone(dto.phone());
+        contact.setUpdatedAt(OffsetDateTime.now());
 
         contactRepository.save(contact);
     }
