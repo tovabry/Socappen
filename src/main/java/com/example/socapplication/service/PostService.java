@@ -3,6 +3,7 @@ package com.example.socapplication.service;
 import com.example.socapplication.model.dto.postDto.AddPost;
 import com.example.socapplication.model.dto.postDto.ResponsePost;
 import com.example.socapplication.model.dto.postDto.UpdatePost;
+import com.example.socapplication.model.dto.postMediaDto.AddPostMedia;
 import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.model.entity.Post;
 import com.example.socapplication.repository.AppUserRepository;
@@ -23,10 +24,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final AppUserRepository appUserRepository;
+    private final PostMediaService postMediaService;
 
-    public PostService(PostRepository postRepository, AppUserRepository appUserRepository) {
+    public PostService(PostRepository postRepository, AppUserRepository appUserRepository, PostMediaService postMediaService) {
         this.postRepository = postRepository;
         this.appUserRepository = appUserRepository;
+        this.postMediaService = postMediaService;
     }
 
     public List<ResponsePost> findAll(int page, int size) {
@@ -85,7 +88,19 @@ public class PostService {
         post.setCreatedAt(OffsetDateTime.now());
         post.setUpdatedAt(OffsetDateTime.now());
 
-        return postRepository.save(post);
+        Post saved = postRepository.save(post);
+
+        if (dto.media() != null) {
+            for (AddPostMedia mediaDto : dto.media()) {
+                postMediaService.createPostMedia(new AddPostMedia(
+                        saved.getId(),
+                        mediaDto.mediaType(),
+                        mediaDto.url(),
+                        mediaDto.sortOrder()
+                ));
+            }
+        }
+        return saved;
     }
 
     public void updatePost(Long id, UpdatePost dto) {

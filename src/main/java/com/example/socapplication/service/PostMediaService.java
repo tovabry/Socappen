@@ -85,7 +85,7 @@ public class PostMediaService {
         PostMedia media = postMediaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        media.setMediaType(MediaType.valueOf(dto.mediaType().toUpperCase()));
+        media.setMediaType(MediaType.valueOf(dto.mediaType()));
         media.setUrl(dto.url());
         media.setSortOrder(dto.sortOrder());
 
@@ -98,5 +98,4 @@ public class PostMediaService {
         }
         postMediaRepository.deleteById(id);
     }
-
 }
