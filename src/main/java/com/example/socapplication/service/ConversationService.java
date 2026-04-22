@@ -150,7 +150,6 @@ public class ConversationService {
         participant.setConversation(conversation);
         participant.setId(new ConversationParticipantId(conversationId, adminId));
         participant.setJoinedAt(OffsetDateTime.now());
-        conversation.getParticipants().add(participant);
 
         conversationParticipantService.save(participant);
         return toResponse(conversation);
