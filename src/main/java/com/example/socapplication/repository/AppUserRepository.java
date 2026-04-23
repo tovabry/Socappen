@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface AppUserRepository extends ListCrudRepository<AppUser, Long> {
     Optional<AppUser> findByEmail(String email);
+    Optional<AppUser> findByEmailHash(String emailHash);
 }

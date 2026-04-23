@@ -1,5 +1,6 @@
 package com.example.socapplication.security;
 
+import com.example.socapplication.model.entity.AppUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -21,8 +22,9 @@ public class JwtUtil {
     private long expiration; // e.g. 86400000 = 24h
 
     public String generateToken(UserDetails userDetails) {
+        AppUser user = (AppUser) userDetails;
         return Jwts.builder()
-                .subject(userDetails.getUsername())
+                .subject(String.valueOf(user.getId()))
                 .claim("roles", userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority).toList())
                 .issuedAt(new Date())
@@ -31,7 +33,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String extractEmail(String token) {
+    public String extractUserId(String token) {
         return getClaims(token).getSubject();
     }
 

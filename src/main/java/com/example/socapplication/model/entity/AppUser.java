@@ -9,6 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -17,14 +19,20 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "app_user")
-public class AppUser implements UserDetails {
+public class AppUser implements UserDetails, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false, length = 255)
+    @Column(name = "email", nullable = false)
     private String email;
+
+    @Column(name = "email_hash")
+    private String emailHash;
 
     @Column(name = "password_hash", nullable = false, length = 100)
     private String passwordHash;
@@ -64,7 +72,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public @NonNull String getUsername() {
-        return email;
+        return emailHash;
     }
 
     @Override

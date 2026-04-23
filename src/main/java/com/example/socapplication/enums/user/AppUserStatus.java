@@ -1,6 +1,8 @@
 package com.example.socapplication.enums.user;
 
-public enum AppUserStatus {
+import java.io.Serializable;
+
+public enum AppUserStatus implements Serializable {
     active,
     inactive,
     suspended,

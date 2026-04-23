@@ -1,10 +1,13 @@
 package com.example.socapplication.service;
 
+import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.repository.AppUserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public final class CurrentUser {
@@ -16,12 +19,19 @@ public final class CurrentUser {
     }
 
     public Long getUserId() {
-        String email = getEmail();
-        if (email == null) return null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        return appUserRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"))
-                .getId();
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
+        }
+
+        AppUser user = (AppUser) auth.getPrincipal();
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found in security context");
+        }
+
+        return user.getId();
     }
 
     public String getEmail() {
@@ -46,7 +56,7 @@ public final class CurrentUser {
             return appUserRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("User not found"))
                     .getRole().getName();
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             return null;
         }
     }

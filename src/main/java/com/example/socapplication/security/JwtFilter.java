@@ -1,13 +1,12 @@
 package com.example.socapplication.security;
 
-import com.example.socapplication.service.AppUserService;
+import com.example.socapplication.repository.AppUserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,11 +20,11 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final AppUserService appUserService;
+    private final AppUserRepository appUserRepository;
 
-    public JwtFilter(JwtUtil jwtUtil, @Lazy AppUserService userDetailsService) {
+    public JwtFilter(JwtUtil jwtUtil, AppUserRepository appUserRepository) {
         this.jwtUtil = jwtUtil;
-        this.appUserService = userDetailsService;
+        this.appUserRepository = appUserRepository;
     }
 
     @Override
@@ -58,18 +57,16 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String email = jwtUtil.extractEmail(token);
+        String userId = jwtUtil.extractUserId(token);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = appUserService.loadUserByUsername(email);
+        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = appUserRepository.findById(Long.parseLong(userId))
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
-
-            authToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-            );
-
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 

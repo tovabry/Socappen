@@ -10,6 +10,7 @@ import com.example.socapplication.service.AuthLogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseCookie;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.time.Duration;
@@ -102,7 +104,14 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseAppUser> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(appUserService.register(request));
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(appUserService.register(request));
+        } catch (IllegalArgumentException e) {
+            // Email already in use
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (Exception _) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Registration failed");
+        }
     }
 
     private String getClientIp(HttpServletRequest request) {

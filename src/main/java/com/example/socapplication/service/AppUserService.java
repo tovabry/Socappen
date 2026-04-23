@@ -17,7 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -27,15 +31,27 @@ public class AppUserService implements UserDetailsService {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final EncryptionService encryptionService;
 
-    public AppUserService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public AppUserService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, EncryptionService encryptionService) {
         this.appUserRepository = appUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.encryptionService = encryptionService;
+    }
+
+    private String hashEmail(String email) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(email.toLowerCase().getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Hashing failed", e);
+        }
     }
 
     public ResponseAppUser register(RegisterRequest request) {
-        if (appUserRepository.findByEmail(request.email()).isPresent()) {
+        if (appUserRepository.findByEmailHash(hashEmail(request.email())).isPresent()) {
             throw new IllegalArgumentException("Email already in use");
         }
 
@@ -44,7 +60,8 @@ public class AppUserService implements UserDetailsService {
 
 
         AppUser user = new AppUser();
-        user.setEmail(request.email());
+        user.setEmail(encryptionService.encrypt(request.email()));
+        user.setEmailHash(hashEmail(request.email()));
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setRole(userRole);
         user.setStatus(AppUserStatus.active);
@@ -56,7 +73,7 @@ public class AppUserService implements UserDetailsService {
 
         return new ResponseAppUser(
                 saved.getId(),
-                saved.getEmail(),
+                encryptionService.decrypt(saved.getEmail()),
                 saved.getStatus(),
                 saved.getRole().getName(),
                 saved.getIsOnline()
@@ -66,24 +83,30 @@ public class AppUserService implements UserDetailsService {
     public List<ResponseAppUser> findAllUsers() {
         return appUserRepository.findAll()
                 .stream()
-                .map(appUser -> new ResponseAppUser(
-                        appUser.getId(),
-                        appUser.getEmail(),
-                        appUser.getStatus(),
-                        appUser.getRole().getName(),
-                        appUser.getIsOnline()
-                ))
+                .map(appUser -> {
+                    try {
+                        return new ResponseAppUser(
+                                appUser.getId(),
+                                encryptionService.decrypt(appUser.getEmail()),
+                                appUser.getStatus(),
+                                appUser.getRole().getName(),
+                                appUser.getIsOnline()
+                        );
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toList();
     }
 
     @Override
     public UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
-        return appUserRepository.findByEmail(email)
+        return appUserRepository.findByEmailHash(hashEmail(email))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
 
     public AppUser findByEmail(String email) {
-        return appUserRepository.findByEmail(email)
+        return appUserRepository.findByEmailHash(hashEmail(email))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
