@@ -97,4 +97,10 @@ public class AppUserService implements UserDetailsService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
+    public String getDecryptedEmailById(Long id) {
+        AppUser user = appUserRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return encryptionService.decrypt(user.getEmail());
+    }
+
 }

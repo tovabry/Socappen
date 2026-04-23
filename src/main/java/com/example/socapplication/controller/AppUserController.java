@@ -28,10 +28,9 @@ public class AppUserController {
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> getCurrentUser() {
         Long id = currentUser.getUserId();
-        String email = currentUser.getEmail();
         Map<String, Object> response = new HashMap<>();
         response.put("id", id);
-        response.put("email", email);
+        response.put("email", appUserService.getDecryptedEmailById(id));
         response.put("role", currentUser.getRole());
         return ResponseEntity.ok(response);
     }

@@ -34,16 +34,6 @@ public final class CurrentUser {
         return user.getId();
     }
 
-    public String getEmail() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
-            return null;
-        }
-
-        return auth.getName(); // already the email from JWT sub
-    }
-
     public String getRole() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
