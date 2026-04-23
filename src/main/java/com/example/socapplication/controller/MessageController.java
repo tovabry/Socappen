@@ -39,10 +39,10 @@ public class MessageController {
             Authentication authentication,
             HttpServletRequest httpRequest) {
 
-        String email = authentication.getName();
+        Long senderId = Long.parseLong(authentication.getName());
         String ip = getClientIp(httpRequest);
 
-        ResponseMessage response = messageService.sendMessage(conversationId, email, dto.content());
+        ResponseMessage response = messageService.sendMessage(conversationId, senderId, dto.content());
 
         messageLogService.log(new CreateMessageLog(response.senderId(), conversationId, ip));
 

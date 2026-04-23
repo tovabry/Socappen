@@ -7,7 +7,6 @@ import com.example.socapplication.model.entity.Message;
 import com.example.socapplication.repository.AppUserRepository;
 import com.example.socapplication.repository.ConversationRepository;
 import com.example.socapplication.repository.MessageRepository;
-import com.example.socapplication.util.HashUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,13 +45,13 @@ public class MessageService {
                 .toList();
     }
 
-    public ResponseMessage sendMessage(Long conversationId, String email, String content) {
+    public ResponseMessage sendMessage(Long conversationId, Long senderId, String content) {
 
         Conversation conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
 
 
-        AppUser sender = appUserRepository.findByEmailHash(HashUtil.hashEmail(email)) // ← fix lookup
+        AppUser sender = appUserRepository.findById(senderId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Message message = new Message();
