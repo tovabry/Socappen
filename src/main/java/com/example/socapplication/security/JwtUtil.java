@@ -40,7 +40,12 @@ public class JwtUtil {
     public boolean isTokenValid(String token) {
         try {
             Claims claims = getClaims(token);
-            return claims.getSubject() != null && claims.getExpiration().after(new Date());
+            if (claims.getSubject() == null || claims.getExpiration().before(new Date())) {
+                return false;
+            }
+            //Reject old tokens where subject is not a numeric user ID
+            Long.parseLong(claims.getSubject());
+            return true;
         } catch (Exception _) {
             return false;
         }

@@ -3,6 +3,7 @@ package com.example.socapplication.controller;
 import com.example.socapplication.model.dto.messageDto.SendMessage;
 import com.example.socapplication.model.dto.messageDto.ResponseMessage;
 import com.example.socapplication.model.dto.messageLogDto.CreateMessageLog;
+import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.service.MessageLogService;
 import com.example.socapplication.service.MessageService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +40,8 @@ public class MessageController {
             Authentication authentication,
             HttpServletRequest httpRequest) {
 
-        Long senderId = Long.parseLong(authentication.getName());
+        AppUser user = (AppUser) authentication.getPrincipal();
+        Long senderId = user.getId();
         String ip = getClientIp(httpRequest);
 
         ResponseMessage response = messageService.sendMessage(conversationId, senderId, dto.content());
