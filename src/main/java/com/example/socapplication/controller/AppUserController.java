@@ -1,13 +1,13 @@
 package com.example.socapplication.controller;
 
 import com.example.socapplication.model.dto.appUserDto.ResponseAppUser;
+import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.service.AppUserService;
 import com.example.socapplication.service.CurrentUser;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +35,23 @@ public class AppUserController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_user')")
     @GetMapping("/all")
     public List<ResponseAppUser> getAllUsers() {
         return appUserService.findAllUsers();
     }
+
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_user')")
+    @GetMapping("/role")
+    public List<AppUser> getUsersByRole(@RequestParam String role) {
+        return appUserService.findAllUsersByRole(role);
+    }
+
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_user')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        appUserService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -43,7 +43,7 @@ public class AppUserService implements UserDetailsService {
         }
 
         //New accounts gets "user" role by default
-        Role userRole = roleRepository.findByName("user")
+        Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role not found"));
 
         AppUser user = new AppUser();
@@ -92,6 +92,30 @@ public class AppUserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
 
+    public List<AppUser> findAllUsersByRole(String role) {
+        return appUserRepository.findByRole_Name(role);
+    }
+
+    public void updateAppUserIsOnline(Long id, boolean isOnline) {
+        AppUser user = appUserRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setIsOnline(isOnline);
+        appUserRepository.save(user);
+    }
+
+    public void updateAppUserStatus(Long id, AppUserStatus status) {
+        AppUser user = appUserRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setStatus(status);
+        appUserRepository.save(user);
+    }
+
+    public void updateStatus(Long id, AppUserStatus status) {
+        AppUser user = appUserRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setStatus(status);
+    }
+
     public AppUser findByEmail(String email) {
         return appUserRepository.findByEmailHash(HashUtil.hashEmail(email))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
@@ -101,6 +125,13 @@ public class AppUserService implements UserDetailsService {
         AppUser user = appUserRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return encryptionService.decrypt(user.getEmail());
+    }
+
+    public void deleteUser(Long id) {
+        if (!appUserRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        appUserRepository.deleteById(id);
     }
 
 }

@@ -27,26 +27,31 @@ public class LogController {
     private final PostLogService postLogService;
     private final FaqLogServie faqLogService;
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'view_logs')")
     @GetMapping("/auth")
     public ResponseEntity<List<ResponseAuthLog>> getAuthLogs() {
         return ResponseEntity.ok(authLogService.findAll());
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'view_logs')")
     @GetMapping("/messages")
     public ResponseEntity<List<ResponseMessageLog>> getMessageLogs() {
         return ResponseEntity.ok(messageLogService.findAll());
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'view_logs')")
     @GetMapping("/audit")
     public ResponseEntity<List<ResponseAuditLog>> getAuditLogs() {
         return ResponseEntity.ok(auditLogService.findAll());
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'view_logs')")
     @GetMapping("/post")
     public ResponseEntity<List<ResponsePostLog>> getPostLogs(){
         return ResponseEntity.ok(postLogService.findAll());
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'view_logs')")
     @GetMapping("/faq")
     public ResponseEntity<List<ResponseFaqLog>> getFaqLogs() {
         return ResponseEntity.ok(faqLogService.findAll());

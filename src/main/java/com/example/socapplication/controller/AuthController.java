@@ -7,6 +7,7 @@ import com.example.socapplication.model.dto.login.LoginRequest;
 import com.example.socapplication.security.JwtUtil;
 import com.example.socapplication.service.AppUserService;
 import com.example.socapplication.service.AuthLogService;
+import com.example.socapplication.service.CurrentUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -35,15 +36,17 @@ public class AuthController {
     private final AppUserService appUserService;
     private final JwtUtil jwtUtil;
     private final AuthLogService authLogService;
+    private final CurrentUser currentUser;
 
     public AuthController(AuthenticationManager authenticationManager,
                           AppUserService userDetailsService,
                           JwtUtil jwtUtil,
-                          AuthLogService authLogService) {
+                          AuthLogService authLogService, CurrentUser currentUser) {
         this.authenticationManager = authenticationManager;
         this.appUserService = userDetailsService;
         this.jwtUtil = jwtUtil;
         this.authLogService = authLogService;
+        this.currentUser = currentUser;
     }
 
     @PostMapping("/login")
@@ -75,6 +78,7 @@ public class AuthController {
 
             httpResponse.addHeader("Set-Cookie", cookie.toString());
 
+            appUserService.updateAppUserIsOnline(userId, true);
             log.info("Inloggning lyckades - user id: {}, ip: {}", userId, ip);
             authLogService.logLogin(new CreateAuthLog(userId, ip, true, null, OffsetDateTime.now()));
 
@@ -90,6 +94,12 @@ public class AuthController {
     //frontend must send CSRF token or logout will fail with 403
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
+        try {
+            Long userId = currentUser.getUserId();
+            appUserService.updateAppUserIsOnline(userId, false);
+        } catch (Exception e) {
+        }
+
         ResponseCookie cookie = ResponseCookie.from("token", "")
                 .httpOnly(true)
                 .secure(false)

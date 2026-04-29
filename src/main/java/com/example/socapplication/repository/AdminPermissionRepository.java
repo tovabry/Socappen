@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AdminPermissionRepository extends JpaRepository<AdminPermission, Integer> {
+public interface AdminPermissionRepository extends JpaRepository<AdminPermission, Long> {
     List<AdminPermission> findByAppUser_Id(Long userId);
-    void deleteByAppUser_IdAndPermission_Id(Long userId, Integer permissionId);
+    void deleteByAppUser_IdAndPermission_Id(Long userId, Long permissionId);
 }

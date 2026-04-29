@@ -14,7 +14,7 @@ public class AdminPermission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", nullable = false)
@@ -26,6 +26,9 @@ public class AdminPermission {
 
     @Column(name = "granted_at", nullable = false)
     private OffsetDateTime grantedAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "granted_by", nullable = false)

@@ -1,6 +1,6 @@
 package com.example.socapplication.model.dto.permissionDto;
 
 public record ResponsePermission(
-        Integer id,
+        Long id,
         String name
 ) {}

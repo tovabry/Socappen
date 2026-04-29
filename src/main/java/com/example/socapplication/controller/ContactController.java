@@ -6,6 +6,7 @@ import com.example.socapplication.model.dto.contactDto.UpdateContact;
 import com.example.socapplication.service.ContactService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,18 +37,21 @@ public class ContactController {
         return ResponseEntity.ok(contactService.findByUserId(userId));
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_contact')")
     @PostMapping
     public ResponseEntity<Void> createContact(@RequestBody CreateContact dto) {
         contactService.createContact(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_contact')")
     @PutMapping("{id}")
     public ResponseEntity<Void> updateContact(@PathVariable Long id, @RequestBody UpdateContact dto) {
     contactService.updateContact(id, dto);
     return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_contact')")
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
     contactService.deleteContact(id);

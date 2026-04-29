@@ -9,6 +9,7 @@ import com.example.socapplication.service.FaqLogServie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
@@ -36,6 +37,7 @@ public class FAQController {
         return faqService.findAll(page, size);
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_faq')")
     @PostMapping
     public ResponseEntity<Void> createFaq(@RequestBody CreateFaq dto, HttpServletRequest request){
         FrequentlyAskedQuestion faq = faqService.createFaq(dto);
@@ -51,12 +53,14 @@ public class FAQController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_faq')")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateFaq(@PathVariable Long id, @RequestBody CreateFaq dto) {
         faqService.updateFaq(id, dto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_faq')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFaq(@PathVariable Long id) {
         faqService.deleteFaq(id);

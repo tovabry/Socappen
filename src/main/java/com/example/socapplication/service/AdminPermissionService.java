@@ -53,6 +53,7 @@ public class AdminPermissionService {
                         p.getPermission().getId(),
                         p.getPermission().getName(),
                         p.getGrantedAt(),
+                        p.getUpdatedAt(),
                         p.getGrantedBy().getId()
                 ))
                 .toList();
@@ -68,8 +69,8 @@ public class AdminPermissionService {
         Permission permission = permissionRepository.findById(dto.permissionId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        if (!user.getRole().getName().equals("admin")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not an admin");
+        if (!user.getRole().getName().equals("SYSADMIN")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not an sysadmin");
         }
 
         AdminPermission adminPermission = new AdminPermission();
@@ -81,14 +82,14 @@ public class AdminPermissionService {
         adminPermissionRepository.save(adminPermission);
     }
 
-    public void revokePermission(Long userId, Integer permissionId) {
+    public void revokePermission(Long userId, Long permissionId) {
         adminPermissionRepository.deleteByAppUser_IdAndPermission_Id(userId, permissionId);
     }
 
     public void promoteToAdmin(Long userId) {
         AppUser user = appUserRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        Role adminRole = roleRepository.findByName("admin")
+        Role adminRole = roleRepository.findByName("ADMIN")
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role not found"));
 
         user.setRole(adminRole);
@@ -99,7 +100,7 @@ public class AdminPermissionService {
         AppUser user = appUserRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        Role userRole = roleRepository.findByName("user")
+        Role userRole = roleRepository.findByName("USER")
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role not found"));
 
         user.setRole(userRole);
