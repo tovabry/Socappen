@@ -37,21 +37,21 @@ public class ContactController {
         return ResponseEntity.ok(contactService.findByUserId(userId));
     }
 
-    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_contact')")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_contact'))")
     @PostMapping
     public ResponseEntity<Void> createContact(@RequestBody CreateContact dto) {
         contactService.createContact(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_contact')")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_contact'))")
     @PutMapping("{id}")
     public ResponseEntity<Void> updateContact(@PathVariable Long id, @RequestBody UpdateContact dto) {
     contactService.updateContact(id, dto);
     return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_contact')")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_contact'))")
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
     contactService.deleteContact(id);

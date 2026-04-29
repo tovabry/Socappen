@@ -45,7 +45,7 @@ public class PostController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SYSADMIN') and @permissionService.hasPermission(authentication, 'manage_post')")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_post'))")
     public ResponseEntity<Void> createPost(@RequestBody AddPost dto, HttpServletRequest request) {
         Post post = postService.createPost(dto);
 
@@ -61,7 +61,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SYSADMIN') and @permissionService.hasPermission(authentication, 'manage_post')")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_post'))")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody UpdatePost dto) {
         postService.updatePost(id, dto);
@@ -69,7 +69,7 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SYSADMIN') and @permissionService.hasPermission(authentication, 'manage_post')")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_post'))")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);

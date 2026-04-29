@@ -37,21 +37,21 @@ public class PostMediaController {
         return ResponseEntity.ok(postMediaService.findById(id));
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SYSADMIN') and @permissionService.hasPermission(authentication, 'manage_post')")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_post'))")
     @PostMapping("/media")
     public ResponseEntity<Void> createPostMedia(@RequestBody AddPostMedia dto) {
         postMediaService.createPostMedia(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SYSADMIN') and @permissionService.hasPermission(authentication, 'manage_post')")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_post'))")
     @PutMapping("/media/{id}")
     public ResponseEntity<Void> updatePostMedia(@PathVariable Long id, @RequestBody UpdatePostMedia dto) {
         postMediaService.updatePostMedia(id, dto);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SYSADMIN') and @permissionService.hasPermission(authentication, 'manage_post')")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_post'))")
     @DeleteMapping("/media/{id}")
     public ResponseEntity<Void> deletePostMedia(@PathVariable Long id) {
         postMediaService.deletePostMedia(id);
