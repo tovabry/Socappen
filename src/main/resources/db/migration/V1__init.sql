@@ -5,7 +5,7 @@ CREATE TABLE role
     name VARCHAR(20) NOT NULL UNIQUE
 );
 
-INSERT INTO role (name) VALUES ('user'), ('admin'), ('sysadmin');
+INSERT INTO role (name) VALUES ('USER'), ('ADMIN'), ('SYSADMIN');
 GO
 
 CREATE TABLE app_user
