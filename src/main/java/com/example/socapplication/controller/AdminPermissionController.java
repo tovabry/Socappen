@@ -2,6 +2,7 @@ package com.example.socapplication.controller;
 
 import com.example.socapplication.model.dto.adminPermissionDto.AddAdminPermission;
 import com.example.socapplication.model.dto.adminPermissionDto.ResponseAdminPermission;
+import com.example.socapplication.model.dto.adminPermissionDto.UpdateAdminPermission;
 import com.example.socapplication.model.dto.permissionDto.ResponsePermission;
 import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.service.AdminPermissionService;
@@ -42,6 +43,14 @@ public class AdminPermissionController {
         adminPermissionService.grantPermission(dto, currentUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_permission'))")
+    @PutMapping("/permissions/{id}")
+    public ResponseEntity<Void> updatePermission(@PathVariable Long id, @RequestBody UpdateAdminPermission dto, @AuthenticationPrincipal AppUser currentUser) {
+        adminPermissionService.updatePermission(dto, id, currentUser.getId());
+        return ResponseEntity.noContent().build();
+    }
+
 
     @PreAuthorize("(hasRole('ADMIN') or hasRole ('SYSADMIN')) and @permissionService.hasPermission(authentication, 'manage_permission')")
     @DeleteMapping("/permissions/{userId}/{permissionId}")

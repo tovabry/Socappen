@@ -54,5 +54,5 @@ GO
 --DROP TABLE IF EXISTS admin_permission;
 --DROP TABLE IF EXISTS permission;
 
-insert into admin_permission (app_user_id, permission_id) values (7, 3);
-update app_user set role_id = 3 where id = 7;
+--insert into admin_permission (app_user_id, permission_id) values (20008, 1);
+--update app_user set role_id = 2 where id = 20008;

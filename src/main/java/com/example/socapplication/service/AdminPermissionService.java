@@ -2,6 +2,7 @@ package com.example.socapplication.service;
 
 import com.example.socapplication.model.dto.adminPermissionDto.AddAdminPermission;
 import com.example.socapplication.model.dto.adminPermissionDto.ResponseAdminPermission;
+import com.example.socapplication.model.dto.adminPermissionDto.UpdateAdminPermission;
 import com.example.socapplication.model.dto.permissionDto.ResponsePermission;
 import com.example.socapplication.model.entity.AdminPermission;
 import com.example.socapplication.model.entity.AppUser;
@@ -69,8 +70,8 @@ public class AdminPermissionService {
         Permission permission = permissionRepository.findById(dto.permissionId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        if (!user.getRole().getName().equals("SYSADMIN")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not an sysadmin");
+        if (!user.getRole().getName().equals("ADMIN")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not an admin");
         }
 
         AdminPermission adminPermission = new AdminPermission();
@@ -78,6 +79,23 @@ public class AdminPermissionService {
         adminPermission.setPermission(permission);
         adminPermission.setGrantedAt(OffsetDateTime.now());
         adminPermission.setGrantedBy(grantedBy);
+
+        adminPermissionRepository.save(adminPermission);
+    }
+
+    public void updatePermission(UpdateAdminPermission dto, Long adminPermissionId, Long updatedById) {
+        AdminPermission adminPermission = adminPermissionRepository.findById(adminPermissionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        Permission permission = permissionRepository.findById(dto.permissionId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        AppUser updatedBy = appUserRepository.findById(updatedById)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        adminPermission.setPermission(permission);
+        adminPermission.setUpdatedAt(OffsetDateTime.now());
+        adminPermission.setUpdatedBy(updatedBy);
 
         adminPermissionRepository.save(adminPermission);
     }

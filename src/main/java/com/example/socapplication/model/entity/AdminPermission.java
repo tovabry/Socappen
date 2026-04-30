@@ -33,4 +33,8 @@ public class AdminPermission {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "granted_by", nullable = false)
     private AppUser grantedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by", nullable = false)
+    private AppUser updatedBy;
 }
