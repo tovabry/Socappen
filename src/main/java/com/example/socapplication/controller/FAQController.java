@@ -53,14 +53,14 @@ public class FAQController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_permission'))")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_faq'))")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateFaq(@PathVariable Long id, @RequestBody CreateFaq dto) {
         faqService.updateFaq(id, dto);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_permission'))")
+    @PreAuthorize("hasRole('SYSADMIN') or (hasRole('ADMIN') and @permissionService.hasPermission(authentication, 'manage_faq'))")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFaq(@PathVariable Long id) {
         faqService.deleteFaq(id);
