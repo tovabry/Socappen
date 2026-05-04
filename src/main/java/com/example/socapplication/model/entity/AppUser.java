@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -56,13 +57,23 @@ public class AppUser implements UserDetails, Serializable {
     @Column(name = "is_online", nullable = false)
     private Boolean isOnline;
 
+    @OneToMany(mappedBy = "appUser", fetch = FetchType.EAGER)
+    private List<AdminPermission> adminPermissions = new ArrayList<>();
+
     // -------------------------
     // UserDetails implementation
     // -------------------------
 
     @Override
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()));
+
+        for (AdminPermission ap : adminPermissions) {
+            authorities.add(new SimpleGrantedAuthority(ap.getPermission().getName()));
+        }
+
+        return authorities;
     }
 
     @Override

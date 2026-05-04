@@ -32,7 +32,7 @@ public class AppUserController {
         response.put("id", id);
         response.put("email", appUserService.getDecryptedEmailById(id));
         response.put("role", currentUser.getRole());
-        response.put("permissions", currentUser.getPermission());
+        response.put("permissions", currentUser.getPermissions());
         return ResponseEntity.ok(response);
     }
 
