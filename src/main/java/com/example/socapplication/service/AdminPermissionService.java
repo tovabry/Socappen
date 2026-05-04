@@ -78,6 +78,8 @@ public class AdminPermissionService {
         adminPermission.setAppUser(user);
         adminPermission.setPermission(permission);
         adminPermission.setGrantedAt(OffsetDateTime.now());
+        adminPermission.setUpdatedAt(OffsetDateTime.now());
+        adminPermission.setUpdatedBy(grantedBy);
         adminPermission.setGrantedBy(grantedBy);
 
         adminPermissionRepository.save(adminPermission);
