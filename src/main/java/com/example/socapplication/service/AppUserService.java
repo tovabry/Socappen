@@ -4,6 +4,7 @@ import com.example.socapplication.model.dto.appUserDto.RegisterRequest;
 import com.example.socapplication.model.dto.appUserDto.ResponseAppUser;
 import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.model.entity.Role;
+import com.example.socapplication.repository.AdminPermissionRepository;
 import com.example.socapplication.repository.AppUserRepository;
 import com.example.socapplication.enums.user.AppUserStatus;
 import com.example.socapplication.repository.RoleRepository;
@@ -11,6 +12,8 @@ import com.example.socapplication.util.HashUtil;
 import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,12 +33,14 @@ public class AppUserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final EncryptionService encryptionService;
+    private final AdminPermissionRepository adminPermissionRepository;
 
-    public AppUserService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, EncryptionService encryptionService) {
+    public AppUserService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, EncryptionService encryptionService, AdminPermissionRepository adminPermissionRepository) {
         this.appUserRepository = appUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.encryptionService = encryptionService;
+        this.adminPermissionRepository = adminPermissionRepository;
     }
 
     public ResponseAppUser register(RegisterRequest request) {
@@ -88,8 +94,20 @@ public class AppUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
-        return appUserRepository.findByEmailHash(HashUtil.hashEmail(email))
+        AppUser user = appUserRepository.findByEmailHash(HashUtil.hashEmail(email))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName().toUpperCase()));
+
+        adminPermissionRepository.findByAppUser_Id(user.getId())
+                .forEach(ap -> authorities.add(new SimpleGrantedAuthority(ap.getPermission().getName())));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                authorities
+        );
     }
 
     public List<AppUser> findAllUsersByRole(String role) {

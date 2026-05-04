@@ -1,13 +1,15 @@
 package com.example.socapplication.service;
 
-import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.repository.AppUserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Service
 public final class CurrentUser {
@@ -25,13 +27,9 @@ public final class CurrentUser {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
         }
 
-        AppUser user = (AppUser) auth.getPrincipal();
-
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found in security context");
-        }
-
-        return user.getId();
+        return appUserRepository.findByEmailHash(auth.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED))
+                .getId();
     }
 
     public String getRole() {
@@ -49,6 +47,15 @@ public final class CurrentUser {
         } catch (NumberFormatException _) {
             return null;
         }
+    }
+
+    public List<String> getPermission() {
+        return SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(a -> !a.startsWith("ROLE_"))
+                .toList();
     }
 
 }
