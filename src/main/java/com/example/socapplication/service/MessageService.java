@@ -71,7 +71,6 @@ public class MessageService {
         Conversation conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
 
-
         AppUser sender = appUserRepository.findById(senderId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

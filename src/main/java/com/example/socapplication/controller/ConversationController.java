@@ -2,6 +2,8 @@ package com.example.socapplication.controller;
 
 import com.example.socapplication.model.dto.conversationDto.CreateConversation;
 import com.example.socapplication.model.dto.conversationDto.ResponseConversation;
+import com.example.socapplication.model.dto.participantDto.ResponseParticipant;
+import com.example.socapplication.service.ConversationParticipantService;
 import com.example.socapplication.service.ConversationService;
 import com.example.socapplication.service.CurrentUser;
 import org.springframework.http.HttpStatus;
@@ -17,10 +19,12 @@ public class ConversationController {
 
     private final ConversationService conversationService;
     private final CurrentUser currentUser;
+    private final ConversationParticipantService conversationParticipantService;
 
-    public ConversationController(ConversationService conversationService, CurrentUser currentUser) {
+    public ConversationController(ConversationService conversationService, CurrentUser currentUser, ConversationParticipantService conversationParticipantService) {
         this.conversationService = conversationService;
         this.currentUser = currentUser;
+        this.conversationParticipantService = conversationParticipantService;
     }
 
     @GetMapping
@@ -47,6 +51,11 @@ public class ConversationController {
         Long userId = currentUser.getUserId();
         List<ResponseConversation> conversations = conversationService.findConversationBasedOnCurrentUser(userId, page, size);
         return ResponseEntity.ok(conversations);
+    }
+
+    @GetMapping("/{conversationId}/participant")
+    public List<ResponseParticipant> findUserParticipantsByConversation(@PathVariable Long conversationId) {
+        return conversationParticipantService.findUserParticipantsByConversationId(conversationId);
     }
 
     @PostMapping

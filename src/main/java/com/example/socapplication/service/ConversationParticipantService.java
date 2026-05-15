@@ -22,12 +22,14 @@ public class ConversationParticipantService {
     private final ConversationParticipantRepository conversationParticipantRepository;
     private final ConversationRepository conversationRepository;
     private final AppUserRepository appUserRepository;
+    private final EncryptionService encryptionService;
 
-    public ConversationParticipantService(ConversationParticipantRepository conversationParticipantRepository, ConversationRepository conversationRepository, AppUserRepository appUserRepository) {
+    public ConversationParticipantService(ConversationParticipantRepository conversationParticipantRepository, ConversationRepository conversationRepository, AppUserRepository appUserRepository, EncryptionService encryptionService) {
         this.conversationParticipantRepository = conversationParticipantRepository;
         this.conversationRepository = conversationRepository;
         this.appUserRepository = appUserRepository;
 
+        this.encryptionService = encryptionService;
     }
 
     public List<ResponseParticipant> findParticipantsByConversationId(Long conversationId) {
@@ -37,6 +39,7 @@ public class ConversationParticipantService {
                 .map(participant -> new ResponseParticipant(
                         participant.getConversation().getId(),
                         participant.getAppUser().getId(),
+                        encryptionService.decrypt(participant.getAppUser().getEmail()),
                         participant.getJoinedAt()
                 ))
                 .toList();
@@ -67,8 +70,22 @@ public class ConversationParticipantService {
         return new ResponseParticipant(
                 conversation.getId(),
                 appUser.getId(),
+                encryptionService.decrypt(appUser.getEmail()),
                 participant.getJoinedAt()
         );
+    }
+
+    public List<ResponseParticipant> findUserParticipantsByConversationId(Long conversationId) {
+        return conversationParticipantRepository.findConversationById(conversationId)
+                .stream()
+                .filter(p -> "USER".equals(p.getAppUser().getRole().getName()))
+                .map(p -> new ResponseParticipant(
+                        p.getConversation().getId(),
+                        p.getAppUser().getId(),
+                        encryptionService.decrypt(p.getAppUser().getEmail()),
+                        p.getJoinedAt()
+                ))
+                .toList();
     }
 
     public void save(ConversationParticipant participant) {
