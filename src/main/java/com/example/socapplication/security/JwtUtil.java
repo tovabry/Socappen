@@ -51,7 +51,7 @@ public class JwtUtil {
         }
     }
 
-    private Claims getClaims(String token) {
+    private Claims getClaims(String token) { //Reads information (claims) from token and verifires signature
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
@@ -59,7 +59,7 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    private SecretKey getSigningKey() {
+    private SecretKey getSigningKey() { //Creates a key based on JWT secret
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 }

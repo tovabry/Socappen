@@ -47,7 +47,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/question/with-answers").permitAll()
 
                         // Sysadmin only
-                        .requestMatchers("/api/sysadmin/**").hasRole("SYSADMIN")
+                        .requestMatchers("/api/sysadmin/**").hasRole("SYSADMIN") //Handles permission for roles
+
 
                         // Admin and sysadmin
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SYSADMIN")
@@ -60,7 +61,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); //Validates JWT at every request
 
         return http.build();
     }
