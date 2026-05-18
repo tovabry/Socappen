@@ -8,5 +8,6 @@ public record ResponseConversation(
         Long id,
         ConversationStatus status,
         OffsetDateTime createdAt,
-        OffsetDateTime lastActivityAt
+        OffsetDateTime lastActivityAt,
+        Long conversationCount
 ) {}

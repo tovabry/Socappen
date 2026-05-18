@@ -22,11 +22,6 @@ public class ConversationParticipantController {
         return participantService.findParticipantsByConversationId(conversationId);
     }
 
-    @GetMapping("/count")
-    public long countParticipantsByConversation(@PathVariable Long conversationId) {
-        return participantService.countParticipantsByConversationId(conversationId);
-    }
-
     @PostMapping
     public ResponseParticipant addParticipant(
             @PathVariable Long conversationId,

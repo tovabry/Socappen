@@ -33,7 +33,6 @@ public class ConversationService {
     public ConversationService(ConversationRepository conversationRepository, AppUserRepository appUserRepository, ConversationParticipantService conversationParticipantService) {
         this.conversationRepository = conversationRepository;
         this.appUserRepository = appUserRepository;
-
         this.conversationParticipantService = conversationParticipantService;
     }
 
@@ -60,16 +59,10 @@ public class ConversationService {
     }
 
     public ResponseConversation findConversationById(Long id) {
-
         var conversation = conversationRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conversation not found"));
 
-        return new ResponseConversation(
-                conversation.getId(),
-                conversation.getStatus(),
-                conversation.getCreatedAt(),
-                conversation.getLastActivityAt()
-        );
+        return toResponse(conversation);
     }
 
     public List<ResponseConversation> findConversationBasedOnCurrentUser(Long id, int page, int size) {
@@ -81,11 +74,15 @@ public class ConversationService {
     }
 
     private ResponseConversation toResponse(Conversation conversation) {
+
+        long count = conversationParticipantService.countParticipantsByConversationId(conversation.getId());
+
         return new ResponseConversation(
                 conversation.getId(),
                 conversation.getStatus(),
                 conversation.getCreatedAt(),
-                conversation.getLastActivityAt()
+                conversation.getLastActivityAt(),
+                count
         );
     }
 
