@@ -22,7 +22,7 @@ public class ConversationParticipantController {
         return participantService.findParticipantsByConversationId(conversationId);
     }
 
-    @GetMapping("/{conversationId}/participants/count")
+    @GetMapping("/count")
     public long countParticipantsByConversation(@PathVariable Long conversationId) {
         return participantService.countParticipantsByConversationId(conversationId);
     }
