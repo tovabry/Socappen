@@ -88,6 +88,10 @@ public class ConversationParticipantService {
                 .toList();
     }
 
+    public long countParticipantsByConversationId(Long conversationId) {
+        return conversationParticipantRepository.countById_ConversationId(conversationId);
+    }
+
     public void save(ConversationParticipant participant) {
         conversationParticipantRepository.save(participant);
     }
