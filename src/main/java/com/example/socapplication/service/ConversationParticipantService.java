@@ -34,7 +34,7 @@ public class ConversationParticipantService {
 
     public List<ResponseParticipant> findParticipantsByConversationId(Long conversationId) {
 
-        return conversationParticipantRepository.findConversationById(conversationId)
+        return conversationParticipantRepository.findById_ConversationId(conversationId)
                 .stream()
                 .map(participant -> new ResponseParticipant(
                         participant.getConversation().getId(),
@@ -76,7 +76,7 @@ public class ConversationParticipantService {
     }
 
     public List<ResponseParticipant> findUserParticipantsByConversationId(Long conversationId) {
-        return conversationParticipantRepository.findConversationById(conversationId)
+        return conversationParticipantRepository.findById_ConversationId(conversationId)
                 .stream()
                 .filter(p -> "USER".equals(p.getAppUser().getRole().getName()))
                 .map(p -> new ResponseParticipant(
