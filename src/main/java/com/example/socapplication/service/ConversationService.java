@@ -1,6 +1,7 @@
 package com.example.socapplication.service;
 
 import com.example.socapplication.model.dto.conversationDto.ResponseConversation;
+import com.example.socapplication.model.dto.participantDto.ResponseParticipant;
 import com.example.socapplication.model.entity.AppUser;
 import com.example.socapplication.model.entity.Conversation;
 import com.example.socapplication.model.entity.ConversationParticipant;
@@ -75,14 +76,20 @@ public class ConversationService {
 
     private ResponseConversation toResponse(Conversation conversation) {
 
-        long count = conversationParticipantService.countParticipantsByConversationId(conversation.getId());
+        long  participantCount = conversationParticipantService.countParticipantsByConversationId(conversation.getId());
+        String participantEmail = conversationParticipantService.findUserParticipantsByConversationId(conversation.getId())
+                .stream()
+                .map(ResponseParticipant::email)
+                .findFirst()
+                .orElse(null);
 
         return new ResponseConversation(
                 conversation.getId(),
                 conversation.getStatus(),
                 conversation.getCreatedAt(),
                 conversation.getLastActivityAt(),
-                count
+                participantCount,
+                participantEmail
         );
     }
 

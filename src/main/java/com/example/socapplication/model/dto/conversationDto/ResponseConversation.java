@@ -9,5 +9,6 @@ public record ResponseConversation(
         ConversationStatus status,
         OffsetDateTime createdAt,
         OffsetDateTime lastActivityAt,
-        Long conversationCount
+        Long conversationCount,
+        String participantEmail
 ) {}
