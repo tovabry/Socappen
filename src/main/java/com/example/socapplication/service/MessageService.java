@@ -30,13 +30,15 @@ public class MessageService {
     private final AppUserRepository appUserRepository;
     private final EncryptionService encryptionService;
     private final ConversationParticipantRepository conversationParticipantRepository;
+    private final EmailNotificationService emailNotificationService;
 
-    public MessageService(MessageRepository messageRepository, ConversationRepository conversationRepository, AppUserRepository appUserRepository, EncryptionService encryptionService, ConversationParticipantRepository conversationParticipantRepository) {
+    public MessageService(MessageRepository messageRepository, ConversationRepository conversationRepository, AppUserRepository appUserRepository, EncryptionService encryptionService, ConversationParticipantRepository conversationParticipantRepository, EmailNotificationService emailNotificationService) {
         this.messageRepository = messageRepository;
         this.conversationRepository = conversationRepository;
         this.appUserRepository = appUserRepository;
         this.encryptionService = encryptionService;
         this.conversationParticipantRepository = conversationParticipantRepository;
+        this.emailNotificationService = emailNotificationService;
     }
 
     public List<ResponseMessage> findMessagesByConversationId(Long conversationId, Long requesterId, int page, int size) {
@@ -81,6 +83,13 @@ public class MessageService {
         message.setSentAt(OffsetDateTime.now());
 
         messageRepository.save(message);
+
+        if ("USER".equals(sender.getRole().getName())) {
+            emailNotificationService.notifyAll(
+                    "New message received",
+                    "A user has sent a new message in conversation: " + conversationId
+            );
+        }
 
         return new ResponseMessage(
                 message.getId(),
